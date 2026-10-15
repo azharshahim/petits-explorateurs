@@ -288,6 +288,66 @@ input[type=range]{-webkit-appearance:none;appearance:none;flex:1;min-width:0;hei
 input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:32px;height:32px;border-radius:50%;background:#fff;border:5px solid var(--violet);box-shadow:0 4px 10px rgba(0,0,0,.3)}
 input[type=range]::-moz-range-thumb{width:22px;height:22px;border-radius:50%;background:#fff;border:5px solid var(--violet);box-shadow:0 4px 10px rgba(0,0,0,.3)}
 
+/* ===== pseudo + personnages ===== */
+#starTotal{max-width:62vw}
+@media(max-width:460px){.hasname .brand span{display:none}}
+#starTotal .pn{display:inline-flex;align-items:center;gap:4px;max-width:40vw;overflow:hidden;white-space:nowrap}
+#starTotal .pt{overflow:hidden;text-overflow:ellipsis;font-weight:800}
+.prof{padding-top:6px}
+.avbig{font-size:92px;line-height:1.05;filter:drop-shadow(0 12px 8px rgba(40,20,120,.25));animation:foxbob 2.8s ease-in-out infinite}
+.avbig.hop{animation:popb2 .5s ease-out,foxbob 2.8s .5s ease-in-out infinite}
+@keyframes popb2{from{transform:scale(.4) rotate(-20deg)}60%{transform:scale(1.25)}}
+.namein{width:100%;max-width:360px;margin:14px auto 0;display:block;text-align:center;font-family:var(--f-display);font-size:28px;font-weight:800;color:var(--ink);background:var(--surface);border:3px solid var(--line);border-radius:999px;padding:12px 18px;min-height:64px;outline:none}
+.namein:focus{border-color:var(--violet);box-shadow:0 0 0 5px color-mix(in srgb,var(--violet) 25%,transparent)}
+.avgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;max-width:380px;margin:0 auto}
+.avb{aspect-ratio:1;border-radius:26px;font-size:42px;display:grid;place-items:center;background:var(--surface);border:3px solid var(--line);transition:transform .15s}
+.avb:hover{transform:translateY(-3px)}
+.avb.on{border-color:var(--violet);background:color-mix(in srgb,var(--violet) 14%,var(--surface));transform:scale(1.07);box-shadow:0 10px 18px -10px var(--violet)}
+.gobtn{margin:22px auto 8px;display:block;min-width:220px;font-size:22px}
+.showpage{margin-top:4px}
+.stage{position:relative;display:block;width:100%;height:min(68vh,540px);border-radius:36px;overflow:hidden;box-shadow:var(--shadow);padding:0;color:#fff;isolation:isolate}
+.stage .bgx,.stage .city,.stage .rb{position:absolute;inset:0;z-index:-1}
+.stage .char{position:absolute;left:50%;bottom:34%;width:0;display:block;z-index:3}
+.stage .chi{position:absolute;left:-60px;bottom:0;font-size:120px;line-height:1;display:block;animation:chbob 2.2s 1.6s ease-in-out infinite;filter:drop-shadow(0 16px 10px rgba(0,0,0,.35))}
+.stage .wel{position:absolute;left:8px;right:8px;top:18px;z-index:4;font-family:var(--f-display);font-weight:800;font-size:clamp(28px,8vw,40px);line-height:1.1;text-shadow:0 3px 0 rgba(0,0,0,.28);animation:pop .6s .9s both}
+.stage .fxt{position:absolute;left:50%;top:44%;z-index:5;transform:translateX(-50%);white-space:nowrap;font-family:var(--f-display);font-weight:900;font-size:clamp(34px,11vw,56px);animation:fxin .5s 1.5s both,fxout .4s 3s forwards}
+.stage .sp{position:absolute;bottom:-40px;z-index:2;animation:rise 3s linear infinite;font-style:normal}
+.stage .ln{position:absolute;left:-60%;width:60%;height:4px;border-radius:9px;background:rgba(255,255,255,.75);z-index:1;animation:sweep .9s ease-out both}
+@keyframes chbob{50%{transform:translateY(-12px) rotate(3deg)}}
+@keyframes fxin{from{transform:translateX(-50%) scale(.1) rotate(-14deg);opacity:0}70%{transform:translateX(-50%) scale(1.25) rotate(4deg)}}
+@keyframes fxout{to{opacity:0}}
+@keyframes sweep{to{left:120%}}
+/* héros : ville de nuit + éclair de comics */
+.th-hero .bgx{background:linear-gradient(180deg,#1A2A78,#6C3BB8 55%,#FF6A88)}
+.th-hero .city{inset:auto 0 0 0;height:30%;background:#0C0E36;clip-path:polygon(0 40%,8% 40%,8% 10%,18% 10%,18% 55%,26% 55%,26% 25%,36% 25%,36% 60%,44% 60%,44% 5%,54% 5%,54% 45%,62% 45%,62% 20%,72% 20%,72% 55%,80% 55%,80% 30%,90% 30%,90% 50%,100% 50%,100% 100%,0 100%)}
+.th-hero .char{animation:heroFly 1.5s cubic-bezier(.2,.8,.3,1) both}
+@keyframes heroFly{from{left:-30%;bottom:6%;transform:rotate(-24deg) scale(.6)}}
+.th-hero .fxt{color:#FFE14D;-webkit-text-stroke:3px #C2185B;text-shadow:5px 5px 0 #C2185B;background:none}
+/* manga : lignes de vitesse + pétales */
+.th-manga .bgx{background:repeating-conic-gradient(from 0deg at 50% 55%,#fff 0 3deg,#FFD6E5 3deg 7deg,#fff 7deg 9deg,#FFB8D2 9deg 11deg)}
+.th-manga{color:#1B1745}
+.th-manga .wel{color:#1B1745;text-shadow:3px 3px 0 #fff,-3px -3px 0 #fff,3px -3px 0 #fff,-3px 3px 0 #fff}
+.th-manga .char{animation:dash .9s cubic-bezier(.1,.9,.2,1) both}
+@keyframes dash{from{left:-40%;transform:skewX(-30deg) scale(1.3);filter:blur(8px)}}
+.th-manga .fxt{color:#E11D48;-webkit-text-stroke:4px #fff;paint-order:stroke fill;text-shadow:4px 4px 0 #1B1745}
+.th-manga .ln{background:#1B1745}
+.th-manga .sp{bottom:auto;top:-40px;animation:fall 4s linear infinite}
+@keyframes fall{to{transform:translateY(600px) rotate(320deg)}}
+/* magique : château + étoiles */
+.th-magic .bgx{background:linear-gradient(180deg,#1B1760,#7A3FD1 60%,#FF9ACB)}
+.th-magic .castle{position:absolute;right:4%;bottom:5%;font-size:110px;z-index:1;opacity:.95;filter:drop-shadow(0 8px 10px rgba(0,0,0,.3))}
+.th-magic .char{animation:magicIn 1.4s ease-out both}
+@keyframes magicIn{from{bottom:-30%;transform:scale(.3) rotate(540deg);opacity:0}}
+.th-magic .fxt{font-size:clamp(24px,7.5vw,40px);color:#FFF3A8;text-shadow:0 0 14px #FFD34D,0 0 28px #fff}
+/* kawaii : pastel, cœurs, arc-en-ciel */
+.th-kawaii{color:#8A1F5E}
+.th-kawaii .bgx{background:radial-gradient(circle,rgba(255,255,255,.7) 0 6px,transparent 7px) 0 0/34px 34px,linear-gradient(180deg,#FFD3E8,#C9F3FF)}
+.th-kawaii .rb{inset:auto -10% -40% -10%;height:80%;border-radius:999px;opacity:.9;background:radial-gradient(circle at 50% 100%,transparent 52%,#ff9ec4 52% 58%,#ffd27a 58% 64%,#a8f0b8 64% 70%,#9ad7ff 70% 76%,#cdb4ff 76% 82%,transparent 82%)}
+.th-kawaii .wel{color:#fff;text-shadow:0 3px 0 #E0559B,2px 2px 0 #E0559B,-2px 2px 0 #E0559B}
+.th-kawaii .char{animation:boing 1.3s both}
+@keyframes boing{from{bottom:90%;transform:scale(.4,1.5)}35%{bottom:34%;transform:scale(1.4,.6)}55%{bottom:50%;transform:scale(.9,1.15)}75%{bottom:34%;transform:scale(1.15,.9)}}
+.th-kawaii .fxt{color:#fff;-webkit-text-stroke:3px #E0559B;text-shadow:4px 4px 0 #E0559B}
+
 .confetti{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:50}
 .confetti i{position:absolute;top:-24px;width:10px;height:15px;border-radius:3px;animation:cf var(--t,2.4s) ease-in forwards}
 @keyframes cf{to{transform:translate3d(var(--dx,0),112vh,0) rotate(760deg)}}
@@ -1519,6 +1579,15 @@ const UI={
   ask:['Quel âge as-tu ?','How old are you?','Ki laz to ena ?'],
   lead:['Touche le ballon qui porte ton âge !','Pop the balloon with your age!','Touse balon ki ena to laz !'],
   hello:['Salut !','Hello!','Salam !'],
+  nameQ:['Comment tu t’appelles ?','What’s your name?','Ki to nom ?'],
+  nameLead:['Écris ton pseudo et choisis ton personnage.','Type your nickname and pick your character.','Ekrir to psedonim ek swazir to personaz.'],
+  namePh:['Ton pseudo','Your nickname','To psedonim'],
+  go:['C’est parti !','Let’s go!','Annou ale !'],
+  defName:['Explorateur','Explorer','Explorater'],
+  welcomeN:n=>[`Bienvenue ${n} !`,`Welcome ${n}!`,`Byenvini ${n} !`],
+  hiN:n=>[`Salut ${n} !`,`Hi ${n}!`,`Salam ${n} !`],
+  pickHero:['Choisis ton personnage','Pick your character','Swazir to personaz'],
+  fx:[['POW !','シュッ !','✨ ABRACADABRA ✨','Yay ! 💖'],['BAM!','SWISH!','✨ ABRACADABRA ✨','Yay! 💖'],['POW !','シュッ !','✨ ABRAKADABRA ✨','Yay ! 💖']],
   start:['Touche pour commencer','Tap to start','Touse pou komanse'],
   settings:['Réglages','Settings','Paramet'],
   close:['Fermer','Close','Ferm'],
@@ -1607,7 +1676,8 @@ let Q=null,M=null,CUR=null;
 const totalStars=()=>Object.values(PROG).reduce((a,b)=>a+(+b||0),0);
 function starStr(n){return [1,2,3].map(i=>`<span class="${i<=n?'on':''}">★</span>`).join('')}
 function paintHeader(){
-  $('#starTotal').innerHTML=`<span class="st">★</span> ${totalStars()}`;
+  $('#starTotal').innerHTML=(NAME?`<span class="pn"><span aria-hidden="true">${AVATAR}</span> <span class="pt">${esc(NAME)}</span></span> `:'')+`<span class="st">★</span> ${totalStars()}`;
+  document.body.classList.toggle('hasname',!!NAME);
   const g=$('#gearBtn');g.innerHTML=IC.gear;g.setAttribute('aria-label',U('settings'));g.title=U('settings');
   document.documentElement.setAttribute('lang',LANG==='mfe'?'mfe':LANG);
 }
@@ -1616,6 +1686,11 @@ function paintHeader(){
 let AGE=store.get('age',null);if(typeof AGE!=='number'||AGE<2||AGE>14)AGE=null;
 if(AGE!==null)S.band=bandOf(AGE);
 let GATED=false;
+const AVATARS=['🦸‍♀️','🦸‍♂️','🥷','🧚‍♀️','🧙‍♂️','🦄','🐱','🐰'];
+const THEMES=['hero','hero','manga','magic','magic','kawaii','kawaii','kawaii'];
+let NAME=store.get('name','');if(typeof NAME!=='string')NAME='';NAME=NAME.slice(0,12);
+let AVATAR=store.get('avatar',AVATARS[0]);if(!AVATARS.includes(AVATAR))AVATAR=AVATARS[0];
+let SHOWTOK=0;
 function ageScene(){
   const tw=Array.from({length:14},()=>`<i class="tw" style="left:${rnd(4,96)}%;top:${rnd(6,60)}%;animation-delay:-${(Math.random()*2.4).toFixed(2)}s"></i>`).join('');
   const fl=['🎈','⭐','🦋','🌈','🍭','🎵'].map((e,i)=>`<span class="fl" style="left:${8+i*16}%;animation-delay:-${i*1.3}s">${e}</span>`).join('');
@@ -1644,16 +1719,50 @@ function pickAge(a,btn){
   speak(U('yearsOld',a));
   AGE=a;S.band=bandOf(a);store.set('age',a);store.set('band',S.band);
   confetti();
-  setTimeout(()=>{S.picking=false;musStop();viewMenu()},900);
+  setTimeout(()=>{S.picking=false;viewProfile()},900);
+}
+function viewProfile(){
+  arcStop();S.view='profile';Q=null;M=null;
+  if(!MUS.timer)musStart(MUSIC.welcome);
+  app.innerHTML=`<section class="agepage prof">
+    <div class="avbig" aria-hidden="true">${AVATAR}</div>
+    <h1>${U('nameQ')}</h1><p class="lead">${U('nameLead')}</p>
+    <input id="nameIn" class="namein" type="text" maxlength="12" autocomplete="off" autocapitalize="words" spellcheck="false" placeholder="${U('namePh')}" aria-label="${U('namePh')}" value="${esc(NAME)}">
+    <p class="set-t" style="margin-top:18px">${U('pickHero')}</p>
+    <div class="avgrid" role="radiogroup" aria-label="${U('pickHero')}">${AVATARS.map(a=>`<button class="avb${a===AVATAR?' on':''}" data-av="${a}" role="radio" aria-checked="${a===AVATAR}" aria-label="${a}">${a}</button>`).join('')}</div>
+    <button class="btn gobtn" style="--band:var(--pink);--band2:var(--violet)" data-act="go">${U('go')}</button>
+  </section>`;
+  window.scrollTo(0,0);
+}
+function startShow(){
+  const inp=$('#nameIn');
+  NAME=((inp?inp.value:NAME)||'').trim().slice(0,12)||U('defName');
+  store.set('name',NAME);store.set('avatar',AVATAR);
+  arcStop();musStop();S.view='show';paintHeader();
+  const th=THEMES[AVATARS.indexOf(AVATAR)]||'hero',ti=['hero','manga','magic','kawaii'].indexOf(th);
+  const bits={hero:['💥','⭐','☁️'],manga:['🌸','✦','🌸'],magic:['✨','⭐','🌙'],kawaii:['💖','🌈','⭐']}[th];
+  const conf=Array.from({length:16},(_,i)=>`<i class="sp" style="left:${rnd(2,96)}%;animation-delay:${(Math.random()*2.4).toFixed(2)}s;animation-duration:${(2.2+Math.random()*2).toFixed(1)}s;font-size:${rnd(16,30)}px">${bits[i%3]}</i>`).join('');
+  const lines=th==='hero'||th==='manga'?Array.from({length:9},(_,i)=>`<i class="ln" style="top:${8+i*10}%;animation-delay:${(i*.07).toFixed(2)}s"></i>`).join(''):'';
+  app.innerHTML=`<section class="showpage"><button class="stage th-${th}" data-act="skip" aria-label="${U('welcomeN',esc(NAME))}">
+    <i class="bgx"></i>${th==='magic'?'<span class="castle" aria-hidden="true">🏰</span>':''}${th==='hero'?'<i class="city"></i>':''}${th==='kawaii'?'<i class="rb"></i>':''}
+    ${lines}${conf}
+    <span class="char"><span class="chi">${AVATAR}</span></span>
+    <span class="fxt">${U('fx')[ti]}</span>
+    <span class="wel">${U('welcomeN',esc(NAME))}</span>
+  </button></section>`;
+  sndWin();confetti();speak(U('welcomeN',NAME));
+  const tok=++SHOWTOK;
+  setTimeout(()=>{if(tok===SHOWTOK&&S.view==='show')viewMenu()},3600);
 }
 function viewMenu(){
+  SHOWTOK++;musStop();
   arcStop();S.view='menu';Q=null;M=null;
   if(AGE===null){viewHome();return}
   const b=BANDS[S.band],gs=GAMES.filter(g=>g.band===S.band||(g.bands&&g.bands.includes(S.band)));
   const edu=gs.filter(g=>!g.arc),arc=gs.filter(g=>g.arc);
   app.innerHTML=`<section style="${bs(b)}">
     <button class="back" data-act="home">${U('change')}</button>
-    <div class="bandhead"><span class="bnum">${AGE}<small>${U('years')}</small></span><div><h1>${U('gamesFor',AGE)}</h1><p class="lead">${tt(b.level)}</p></div></div>
+    <div class="bandhead"><span class="bnum">${AGE}<small>${U('years')}</small></span><div><h1>${NAME?U('hiN',esc(NAME)):U('gamesFor',AGE)}</h1><p class="lead" style="margin:2px 0 0">${U('gamesFor',AGE)}</p><p class="lead">${tt(b.level)}</p></div></div>
     <p class="sect learn">${U('learn')}</p>
     <div class="ggrid">${GAMES_HTML(edu)}</div>
     <p class="sect">${A('arcade')}</p>
@@ -1804,6 +1913,7 @@ function showResult(stars,sub){
 app.addEventListener('click',e=>{
   const t=e.target.closest('button');if(!t)return;
   if(t.dataset.age!==undefined){pickAge(+t.dataset.age,t);return}
+  if(t.dataset.av){AVATAR=t.dataset.av;store.set('avatar',AVATAR);app.querySelectorAll('.avb').forEach(b=>{const on=b.dataset.av===AVATAR;b.classList.toggle('on',on);b.setAttribute('aria-checked',String(on))});const bg=$('.avbig');if(bg){bg.textContent=AVATAR;bg.classList.remove('hop');void bg.offsetWidth;bg.classList.add('hop')}tone(660+AVATARS.indexOf(AVATAR)*60,.12,'triangle',0,.1);return}
   if(t.dataset.game){
     const g=GAMES.find(x=>x.id===t.dataset.game);
     if(g)g.arc?startArcade(g):g.type==='memory'?startMemory(g):startQuiz(g);return;
@@ -1811,6 +1921,8 @@ app.addEventListener('click',e=>{
   if(t.dataset.k!==undefined){answer(+t.dataset.k,t);return}
   if(t.dataset.m!==undefined){flip(+t.dataset.m,t);return}
   const act=t.dataset.act;
+  if(act==='go'){startShow();return}
+  if(act==='skip'){viewMenu();return}
   if(act==='gate'){GATED=true;try{getAC();AC.resume&&AC.resume()}catch(x){}sndOk();viewHome()}
   else if(act==='home')viewHome();
   else if(act==='menu')viewMenu();
@@ -1833,7 +1945,7 @@ $('#sheet').addEventListener('click',e=>{
     LANG=t.dataset.lang;store.set('lang',LANG);
     try{window.speechSynthesis&&window.speechSynthesis.cancel()}catch(x){}
     paintHeader();paintSheet();
-    if(S.view==='home')viewHome();else if(S.view==='menu')viewMenu();
+    if(S.view==='home')viewHome();else if(S.view==='menu')viewMenu();else if(S.view==='profile'){const v=($('#nameIn')||{}).value;if(v!==undefined)NAME=v.trim().slice(0,12);viewProfile()}
   }
 });
 $('#sheet').addEventListener('input',e=>{
@@ -1842,13 +1954,13 @@ $('#sheet').addEventListener('input',e=>{
   if(!SOUND&&v>0){SOUND=true;store.set('sound',true);paintSheet();const r=$('#volRange');if(r)r.focus()}
 });
 $('#sheet').addEventListener('change',e=>{if(e.target.id==='volRange')sndOk()});
-document.addEventListener('keydown',e=>{if(e.key==='Escape')closeSheet()});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeSheet();if(e.key==='Enter'&&e.target&&e.target.id==='nameIn')startShow()});
 document.addEventListener('pointerdown',()=>{if(AC&&AC.state==='suspended')AC.resume()},true);
 /* Coupe tout (musique, voix) quand l'app passe en arrière-plan */
 let BG_RESUME=null;
 function goBackground(){
   if(BG_RESUME!==null)return;
-  BG_RESUME=S.view==='home'?'home':(ARC.run?'arc':'');
+  BG_RESUME=(S.view==='home'||S.view==='profile')?'home':(ARC.run?'arc':'');
   if(ARC.run&&!ARC.paused){ARC.paused=true;BG_RESUME='arc-p'}
   musStop();
   try{window.speechSynthesis&&window.speechSynthesis.cancel()}catch(e){}
@@ -1858,7 +1970,7 @@ function comeForeground(){
   if(BG_RESUME===null||document.hidden)return;
   const r=BG_RESUME;BG_RESUME=null;
   try{if(AC&&AC.resume)AC.resume()}catch(e){}
-  if(r==='home'&&S.view==='home')musStart(MUSIC.welcome);
+  if(r==='home'&&(S.view==='home'||S.view==='profile'))musStart(MUSIC.welcome);
   else if((r==='arc'||r==='arc-p')&&ARC.run){musStart(ARC.run.mus);if(r==='arc-p'&&!SHEET)ARC.paused=false}
 }
 document.addEventListener('visibilitychange',()=>document.hidden?goBackground():comeForeground());
