@@ -1843,6 +1843,28 @@ $('#sheet').addEventListener('input',e=>{
 $('#sheet').addEventListener('change',e=>{if(e.target.id==='volRange')sndOk()});
 document.addEventListener('keydown',e=>{if(e.key==='Escape')closeSheet()});
 document.addEventListener('pointerdown',()=>{if(AC&&AC.state==='suspended')AC.resume()},true);
+/* Coupe tout (musique, voix) quand l'app passe en arrière-plan */
+let BG_RESUME=null;
+function goBackground(){
+  if(BG_RESUME!==null)return;
+  BG_RESUME=S.view==='home'?'home':(ARC.run?'arc':'');
+  if(ARC.run&&!ARC.paused){ARC.paused=true;BG_RESUME='arc-p'}
+  musStop();
+  try{window.speechSynthesis&&window.speechSynthesis.cancel()}catch(e){}
+  try{if(AC&&AC.state==='running')AC.suspend()}catch(e){}
+}
+function comeForeground(){
+  if(BG_RESUME===null)return;
+  const r=BG_RESUME;BG_RESUME=null;
+  try{if(AC&&AC.resume)AC.resume()}catch(e){}
+  if(r==='home'&&S.view==='home')musStart(MUSIC.welcome);
+  else if((r==='arc'||r==='arc-p')&&ARC.run){musStart(ARC.run.mus);if(r==='arc-p'&&!SHEET)ARC.paused=false}
+}
+document.addEventListener('visibilitychange',()=>document.hidden?goBackground():comeForeground());
+addEventListener('pagehide',goBackground);
+addEventListener('pageshow',()=>{if(!document.hidden)comeForeground()});
+addEventListener('blur',()=>{if(document.hidden)goBackground()});
+
 applyTheme();
 
 if(AGE!==null)viewMenu();else viewHome();
