@@ -865,6 +865,7 @@ function musStart(pat){
   MUS.step=0;MUS.next=AC.currentTime+.15;
   MUS.timer=setInterval(()=>{
     if(!AC||!SOUND){return}
+    if(document.hidden||document.visibilityState==='hidden'||(document.hasFocus&&!document.hasFocus()&&/Android|iPhone|iPad/i.test(navigator.userAgent))){goBackground();return}
     const p=MUS.pat,dur=60/p.bpm/2;
     while(MUS.next<AC.currentTime+.35){
       const s=p.seq[MUS.step%p.seq.length];
@@ -1854,7 +1855,7 @@ function goBackground(){
   try{if(AC&&AC.state==='running')AC.suspend()}catch(e){}
 }
 function comeForeground(){
-  if(BG_RESUME===null)return;
+  if(BG_RESUME===null||document.hidden)return;
   const r=BG_RESUME;BG_RESUME=null;
   try{if(AC&&AC.resume)AC.resume()}catch(e){}
   if(r==='home'&&S.view==='home')musStart(MUSIC.welcome);
@@ -1862,6 +1863,9 @@ function comeForeground(){
 }
 document.addEventListener('visibilitychange',()=>document.hidden?goBackground():comeForeground());
 addEventListener('pagehide',goBackground);
+addEventListener('freeze',goBackground);document.addEventListener('freeze',goBackground);
+addEventListener('focus',comeForeground);
+document.addEventListener('pointerdown',comeForeground,true);
 addEventListener('pageshow',()=>{if(!document.hidden)comeForeground()});
 addEventListener('blur',()=>{if(document.hidden)goBackground()});
 
