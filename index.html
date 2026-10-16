@@ -629,6 +629,75 @@ section>.stage:has(#cv){height:auto;border-radius:28px;display:block}
   body.arcplay .pl{grid-area:pl}body.arcplay .pr{grid-area:pr;flex-direction:column}
   body.arcplay .ovbox{transform:scale(.82)}
 }
+
+/* v12 : serpents et échelles agrandi, grand dé au centre */
+.snlwrap{--bw:min(calc(100vw - 12px),calc(100dvh - 190px),720px);display:flex;flex-direction:column;align-items:center}
+.snl{width:var(--bw)!important;max-width:none;margin:6px calc(50% - var(--bw)/2) 0}
+.snlwrap{width:100%}
+.snlbot{display:flex;align-items:center;gap:12px;width:min(100%,560px);margin:10px 0 0;padding:8px 12px;border-radius:999px;background:var(--surface);border:2px solid var(--line)}
+.snlbot b{flex:1;min-width:0;font-family:var(--f-display);font-size:clamp(16px,4.4vw,20px);line-height:1.2}
+.dice.big{width:72px;height:72px;font-size:50px;border-radius:50%}
+.sq{font-size:clamp(8px,2.6vw,13px)}
+.bigdice{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);z-index:70;pointer-events:none;display:flex;flex-direction:column;align-items:center;gap:6px;padding:18px 34px 14px;border-radius:44px;background:rgba(20,16,60,.78);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);color:#fff;box-shadow:0 30px 60px -20px rgba(0,0,0,.6);transition:opacity .4s,transform .4s}
+.bigdice span{font-size:min(38vmin,220px);line-height:1;filter:drop-shadow(0 12px 10px rgba(0,0,0,.4))}
+.bigdice b{font-family:var(--f-display);font-size:clamp(20px,5vmin,30px)}
+.bigdice.fade{opacity:0;transform:translate(-50%,-62%) scale(.8)}
+@media(orientation:landscape) and (max-height:620px){
+  .snlwrap{--bw:calc(100dvh - 70px);flex-direction:row;align-items:center;justify-content:center;gap:14px}
+  .snl{margin:0}
+  .snlbot{flex-direction:column;width:200px;border-radius:30px;padding:14px;text-align:center}
+}
+.pov{z-index:5}.pov .ovbox{display:flex;flex-direction:column;gap:12px;align-items:center}.pov .btn.alt{background:var(--surface);color:var(--ink);border:3px solid var(--line)}
+#pauseBtn{flex:none;min-width:44px;justify-content:center}
+.flash{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:500;max-width:min(92vw,420px);padding:12px 18px;border-radius:22px;background:var(--ink);color:var(--bg);font-weight:800;font-size:15px;text-align:center;box-shadow:0 14px 30px -10px rgba(0,0,0,.5);transition:opacity .5s}.flash.out{opacity:0}
+#rotBtn{font-size:18px}
+
+/* v12 : jeux en famille modernes */
+.scorebd{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:10px 0}
+.sb{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border-radius:999px;background:var(--surface);border:3px solid var(--line);font-size:15px}
+.sb.act{border-color:var(--pc);box-shadow:0 0 0 4px color-mix(in srgb,var(--pc) 28%,transparent);transform:scale(1.05)}
+.sb em{font-style:normal}.sb b{max-width:90px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-family:var(--f-display)}.sb strong{font-family:var(--f-display);font-size:20px;color:var(--pc)}
+.sb .pdot{display:none}.sb .ei{width:1.1em;height:1.1em}
+.rx{display:flex;flex-direction:column;gap:12px;margin-top:8px;padding:14px;border-radius:32px;transition:background .15s}
+.rx.wait{background:#FFE0E1}.rx.go{background:#9BF0B8}.rx.bad{background:#FFD0A8}.rx.won{background:#FFF1B0}
+.rxm{margin:0;text-align:center;font-family:var(--f-display);font-weight:800;font-size:clamp(26px,7vw,40px);color:#1B1745;min-height:1.3em}
+.rxpads{display:grid;gap:10px;grid-template-columns:1fr 1fr}.rxpads.n2{grid-template-columns:1fr}
+.rxp{min-height:clamp(96px,17dvh,160px);border-radius:28px;background:linear-gradient(150deg,var(--pc),color-mix(in srgb,var(--pc) 60%,#000));color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;touch-action:none;box-shadow:0 8px 0 rgba(0,0,0,.18);-webkit-user-select:none;user-select:none}
+.rxp:active{transform:translateY(5px);box-shadow:0 3px 0 rgba(0,0,0,.18)}
+.rxp .rxe{font-size:44px;line-height:1}.rxp .ei{width:1em;height:1em}.rxp b{font-family:var(--f-display);font-size:20px}.rxp em{font-style:normal;font-family:var(--f-display);font-size:26px}
+.rxr{margin:0;text-align:center;color:#4a4378;font-weight:800}
+.mdgrid{display:grid;gap:8px;grid-template-columns:repeat(4,1fr);margin:6px auto;max-width:520px}.mdgrid.c5{grid-template-columns:repeat(5,1fr)}
+.mdc{aspect-ratio:1;border-radius:20px;font-size:clamp(28px,9vw,46px);background:linear-gradient(150deg,var(--violet),var(--pink));color:#fff;display:grid;place-items:center;box-shadow:0 5px 0 rgba(0,0,0,.18);transition:transform .2s}
+.mdc.up{background:var(--surface);border:3px solid var(--line);color:var(--ink);transform:rotateY(0)}.mdc.ok{background:var(--good-bg);border-color:var(--good)}
+.mdc .ei{width:1em;height:1em;vertical-align:baseline}
+.mdmsg{text-align:center;font-family:var(--f-display);font-weight:800;margin:6px 0}
+.qn{font-family:var(--f-display);color:var(--muted)}
+.pigpan{display:flex;flex-direction:column;align-items:center;gap:8px;margin:8px 0;padding:14px;border-radius:30px;background:var(--surface);border:3px solid var(--line)}
+.pigl{margin:0;font-family:var(--f-display);font-weight:800;font-size:20px;text-align:center}
+.pigpts{display:flex;flex-direction:column;align-items:center}.pigpts small{color:var(--muted)}.pigpts b{font-family:var(--f-display);font-size:56px;line-height:1;color:var(--orange)}
+.pigbtns{display:flex;gap:12px;width:100%}.pigbtns .btn{flex:1}.pigbtns .btn:disabled{opacity:.5}
+
+/* v12 : accueil « Naël » */
+.splash.nael{background:#140f5c}
+.nael-bg{position:absolute;inset:0;width:100%;height:100%;animation:nzoom 9s ease-out both}
+@keyframes nzoom{from{transform:scale(1.18)}to{transform:scale(1)}}
+.nael-bg .ns{fill:#fff;animation:ntw 2.6s ease-in-out infinite}
+@keyframes ntw{50%{opacity:.25}}
+.nael-bg .ncl.c1{animation:ncl 26s linear infinite alternate}.nael-bg .ncl.c2{animation:ncl 34s linear infinite alternate-reverse}
+@keyframes ncl{to{transform:translateX(90px)}}
+.nael-bg .nwv{animation:nwave 5s ease-in-out infinite alternate}@keyframes nwave{to{transform:translateX(26px)}}
+.nael-bg .nrf{animation:nrf 2.2s ease-in-out infinite alternate;transform-box:fill-box;transform-origin:center}@keyframes nrf{to{transform:scaleX(.7);opacity:.5}}
+.nael-bg .nrv{animation:nrv 1.6s linear infinite}@keyframes nrv{to{stroke-dashoffset:-44}}
+.nael-bg .nsun{animation:nsun 4s ease-in-out infinite alternate;transform-origin:290px 448px}@keyframes nsun{to{transform:scale(1.12)}}
+.nael-bg .nbd{animation:nbd 14s linear infinite}@keyframes nbd{from{transform:translateX(-30px)}to{transform:translateX(420px)}}
+.nael-t{position:relative;z-index:3;margin:0;align-self:start;justify-self:center;margin-top:min(20dvh,150px);display:flex;font-family:'Baloo 2','Nunito',system-ui,sans-serif;font-weight:800;font-size:clamp(84px,30vmin,230px);line-height:1;letter-spacing:.01em}
+.nael-t i{font-style:normal;display:inline-block;background:linear-gradient(90deg,#ff3b3b,#ff9f1c,#ffe14d,#4ade80,#22d3ee,#6366f1,#d946ef,#ff3b3b);background-size:200% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent;filter:drop-shadow(0 0 2px #fff) drop-shadow(0 0 2px #fff) drop-shadow(0 7px 0 rgba(30,10,80,.35)) drop-shadow(0 0 26px rgba(255,255,255,.55));animation:nflow 5s linear infinite;animation-delay:calc(var(--i)*-.5s)}
+@keyframes nflow{to{background-position:200% 0}}
+.splash.nael:not(.go) .nael-t i{opacity:0;transform:translateY(40px) scale(.4)}
+.splash.nael.go .nael-t i{animation:nflow 5s linear infinite,npop .9s calc(.25s + var(--i)*.14s) cubic-bezier(.2,1.5,.4,1) both,nbob 3.2s calc(1.6s + var(--i)*.2s) ease-in-out infinite}
+@keyframes npop{from{opacity:0;transform:translateY(60px) scale(.3) rotate(-14deg)}to{opacity:1;transform:none}}
+@keyframes nbob{50%{transform:translateY(-8px)}}
+.splash.nael .sp-tap{color:#fff;text-shadow:0 2px 8px rgba(20,10,80,.7)}
 </style>
 
 </head>
@@ -642,6 +711,7 @@ section>.stage:has(#cv){height:auto;border-radius:28px;display:block}
     </button>
     <div class="tools">
       <span class="chip" id="starTotal" aria-label="Étoiles gagnées"></span>
+      <button class="chip ic" id="rotBtn" aria-label="Rotation" title="Portrait / Paysage">🔄</button>
       <button class="chip ic" id="gearBtn" aria-haspopup="dialog"></button>
     </div>
   </header>
@@ -1896,6 +1966,7 @@ const AK={keys:{},press:{}};
 const KMAP={ArrowLeft:'l',ArrowRight:'r',ArrowUp:'u',ArrowDown:'d',' ':'a',z:'a',Z:'a',x:'u',X:'u',a:'l',A:'l',q:'l',d:'r',D:'r',w:'u',W:'u',f:'f',F:'f',s:'d',S:'d'};
 addEventListener('keydown',e=>{
   if(!ARC.run)return;
+  if((e.key==='p'||e.key==='P'||e.key==='Escape')&&ARC.run.setPause){ARC.run.setPause(!ARC.paused);e.preventDefault();return}
   const k=KMAP[e.key];if(!k)return;
   if(!AK.keys[k])AK.press[k]=true;
   AK.keys[k]=true;e.preventDefault();
@@ -2034,7 +2105,7 @@ function startArcade(g){
   const R={level:1,lives:maxLives,maxLives,got:0,goal:0,state:'ready',inv:0,diff:S.band===6?0:Math.min(1.2,S.band/5),keys:AK.keys};
   const game=ARCADE[g.arc](R);R.game=game;
     app.innerHTML=`<section style="${bs(b)}">
-    <div class="bar"><button class="back" data-act="menu">${U('games')}</button><div class="hud" id="hud"></div></div>
+    <div class="bar"><button class="back" data-act="menu">${U('games')}</button><div class="hud" id="hud"></div><button class="chip ic" id="pauseBtn" aria-label="Pause" title="Pause">⏸</button></div>
     <div class="stage" style="--ar:${game.W}/${game.H}"><canvas id="cv" width="${game.W}" height="${game.H}"></canvas><div class="ov" id="ov" hidden></div></div>
     <div class="pads pl">${padHtml(g.arc,0)}</div><div class="pads pr">${padHtml(g.arc,1)}</div>
   </section>`;
@@ -2115,6 +2186,19 @@ function startArcade(g){
     for(const k in AK.press)AK.press[k]=false;
     ARC.raf=requestAnimationFrame(frame);
   };
+  /* pause */
+  const pov=document.createElement('div');pov.className='ov pov';pov.hidden=true;
+  pov.innerHTML=`<div class="ovbox"><h2>⏸ ${L3('Pause','Pause','Poz')}</h2><button class="btn" id="presume">▶ ${L3('Reprendre','Resume','Kontinye')}</button><button class="btn alt" id="pquit">${L3('Quitter','Quit','Kit')}</button></div>`;
+  cv.parentNode.appendChild(pov);
+  const setPause=on=>{
+    if(ARC.run!==R)return;
+    if(on){if(R.state!=='play')return;ARC.paused=true;pov.hidden=false;musStop();for(const k in AK.keys)AK.keys[k]=false}
+    else{ARC.paused=false;pov.hidden=true;last=performance.now();if(R.mus)musStart(R.mus)}
+  };
+  R.setPause=setPause;
+  $('#pauseBtn').onclick=()=>setPause(!ARC.paused);
+  $('#presume').onclick=()=>setPause(false);
+  $('#pquit').onclick=()=>{arcStop();viewMenu()};
   ARC.run=R;R.mus=MUSIC[g.arc];
   prep();
   musStart(R.mus);
@@ -3570,8 +3654,8 @@ function famFrame(g,inner,withRestart){
 }
 function famSetup(g,spec){
   FAM.tok++;FAM.game=null;
-  const cfg=FAM.cfg[g.id]||(FAM.cfg[g.id]={n:spec.min,cpu:[false,true,true,true,true,true],lvl:'easy'});
-  const rows=Array.from({length:cfg.n},(_,i)=>`<div class="prow"><span class="pdot" style="background:${spec.col?spec.col[i]:PCOL[i]}">${spec.emo?spec.emo[i]:PEMO[i]}</span>${cfg.cpu[i]?`<b>${esc(pName(i,true))}</b>`:`<input class="pnin" data-pn="${i}" type="text" maxlength="12" autocomplete="off" autocapitalize="words" spellcheck="false" value="${esc((FAM.names[i]||'').trim()||defName(i))}" aria-label="${L3('Pseudo du joueur','Player name','Non zoueur')} ${i+1}">`}${i>0?`<button class="seg2" data-fam="tg" data-i="${i}" aria-label="${L3('Humain ou ordinateur','Human or computer','Imen ou ordinater')}">${cfg.cpu[i]?'🤖':'👤'}</button>`:`<span class="seg2 st">👤</span>`}</div>`).join('');
+  const cfg=FAM.cfg[g.id]||(FAM.cfg[g.id]={n:spec.min,cpu:spec.nocpu?[false,false,false,false,false,false]:[false,true,true,true,true,true],lvl:'easy'});
+  const rows=Array.from({length:cfg.n},(_,i)=>`<div class="prow"><span class="pdot" style="background:${spec.col?spec.col[i]:PCOL[i]}">${spec.emo?spec.emo[i]:PEMO[i]}</span>${cfg.cpu[i]?`<b>${esc(pName(i,true))}</b>`:`<input class="pnin" data-pn="${i}" type="text" maxlength="12" autocomplete="off" autocapitalize="words" spellcheck="false" value="${esc((FAM.names[i]||'').trim()||defName(i))}" aria-label="${L3('Pseudo du joueur','Player name','Non zoueur')} ${i+1}">`}${i>0&&!spec.nocpu?`<button class="seg2" data-fam="tg" data-i="${i}" aria-label="${L3('Humain ou ordinateur','Human or computer','Imen ou ordinater')}">${cfg.cpu[i]?'🤖':'👤'}</button>`:`<span class="seg2 st">👤</span>`}</div>`).join('');
   const anyCpu=cfg.cpu.slice(1,cfg.n).some(Boolean);
   famFrame(g,`<div class="qcard"><div class="vis">${g.icon}</div><p class="q">${tt(g.name)}</p></div>
     <div class="setup">
@@ -3720,10 +3804,11 @@ function famSNL(g,cfg){
   const snkSvg=Object.entries(SNK).map(([a,b],i)=>{const [x1,y1]=sqXY(+a),[x2,y2]=sqXY(+b);const mx=(x1+x2)/2,my=(y1+y2)/2,dx=y2-y1,dy=-(x2-x1),l=Math.hypot(dx,dy)||1,w=7*(i%2?1:-1);
     return `<g class="snk" style="--sc:${['#E11D48','#7C3AED','#0EA5E9','#F59E0B','#16A34A'][i%5]}"><path d="M${x1} ${y1} Q ${mx+dx/l*w} ${my+dy/l*w} ${x2} ${y2}"/><circle cx="${x1}" cy="${y1}" r="2.4"/><circle cx="${x1-.8}" cy="${y1-.6}" r=".5" fill="#fff"/><circle cx="${x1+.8}" cy="${y1-.6}" r=".5" fill="#fff"/></g>`}).join('');
   const html=()=>{
-    famFrame(g,`<div class="turnbar"><span class="pdot" id="tdot" style="background:${PCOL[t]}">${PEMO[t]}</span><b id="st">${msg}</b><button class="dice" id="dice" data-fam="roll" aria-label="${L3('Lancer le dé','Roll the dice','Lans de')}">🎲</button></div>
-      <div class="snl"><div class="snlg">${cells.map(c=>`<i class="sq${(c.r+c.c)%2?' a':''}" style="grid-row:${c.r+1};grid-column:${c.c+1}">${c.n}</i>`).join('')}</div>
+    famFrame(g,`<div class="snlwrap"><div class="snl"><div class="snlg">${cells.map(c=>`<i class="sq${(c.r+c.c)%2?' a':''}" style="grid-row:${c.r+1};grid-column:${c.c+1}">${c.n}</i>`).join('')}</div>
         <svg class="snls" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">${ladSvg}${snkSvg}</svg>
-        <div class="snlt">${pos.map((p,i)=>`<span class="stk" id="tk${i}" style="background:${PCOL[i]}">${PEMO[i]}</span>`).join('')}</div></div>`,true);
+        <div class="snlt">${pos.map((p,i)=>`<span class="stk" id="tk${i}" style="background:${PCOL[i]}">${PEMO[i]}</span>`).join('')}</div></div>
+      <div class="snlbot"><span class="pdot" id="tdot" style="background:${PCOL[t]}">${PEMO[t]}</span><b id="st">${msg}</b><button class="dice big" id="dice" data-fam="roll" aria-label="${L3('Lancer le dé','Roll the dice','Lans de')}">🎲</button></div></div>
+      <div class="bigdice" id="bd" hidden><span id="bdd">🎲</span><b id="bdl"></b></div>`,true);
     place();
   };
   const place=()=>pos.forEach((p,i)=>{const el=$('#tk'+i);if(!el)return;const [x,y]=sqXY(Math.max(1,p));const off=(i%2?1:-1)*2.4,offy=(i>1?1:-1)*2.4;
@@ -3732,9 +3817,12 @@ function famSNL(g,cfg){
   const turnMsg=()=>L3(`Tour de ${pName(t,cpu[t])}`,`${pName(t,cpu[t])}’s turn`,`Tour ${pName(t,cpu[t])}`);
   const dot=()=>{const d=$('#tdot');if(d){d.style.background=PCOL[t];d.textContent=PEMO[t]}};
   const roll=()=>{
-    if(busy||over)return;busy=true;const die=$('#dice');
+    if(busy||over)return;busy=true;const die=$('#bdd'),bd=$('#bd');
+    bd.hidden=false;bd.classList.remove('fade');$('#bdl').textContent=pName(t,cpu[t]);
     dicePop(die,()=>{
-      const r=rnd(1,6);die.textContent=DICE[r-1];setMsg(L3(`${pName(t,cpu[t])} fait ${r}`,`${pName(t,cpu[t])} rolls ${r}`,`${pName(t,cpu[t])} fer ${r}`));
+      const r=rnd(1,6);die.textContent=DICE[r-1];$('#bdl').textContent=pName(t,cpu[t])+' · '+r;
+      setTimeout(()=>{bd.classList.add('fade');setTimeout(()=>{bd.hidden=true},450)},1000);
+      setMsg(L3(`${pName(t,cpu[t])} fait ${r}`,`${pName(t,cpu[t])} rolls ${r}`,`${pName(t,cpu[t])} fer ${r}`));
       if(pos[t]+r>100){famTimer(()=>endTurn(r===6),700);return}
       let step=0;const iv=()=>{
         if(step<r){pos[t]++;step++;place();tone(400+step*40,.07,'triangle',0,.1);famTimer(iv,230);return}
@@ -3863,6 +3951,127 @@ document.addEventListener('input',e=>{
   const t=e.target;if(!t||t.dataset.pn===undefined)return;
   FAM.names[+t.dataset.pn]=t.value.slice(0,12);store.set('famnames',FAM.names);
 },false);
+/* ====================== Jeux en famille modernes (pseudos modifiables) ====================== */
+const nm=(i,cpu)=>pName(i,!!cpu);
+const scoreBd=(N,sc,act,cpu)=>`<div class="scorebd">${Array.from({length:N},(_,i)=>`<span class="sb${i===act?' act':''}" style="--pc:${PCOL[i]}"><i class="pdot sm" style="background:${PCOL[i]}"></i><em>${PEMO[i]}</em><b>${esc(nm(i,cpu&&cpu[i]))}</b><strong>${sc[i]}</strong></span>`).join('')}</div>`;
+const topOf=(sc)=>{const m=Math.max(...sc);return sc.map((v,i)=>v===m?i:-1).filter(i=>i>=0)};
+const winLine=(sc,cpu)=>{const w=topOf(sc);return w.length===1?'🏆 '+L3(`${nm(w[0],cpu&&cpu[w[0]])} gagne !`,`${nm(w[0],cpu&&cpu[w[0]])} wins!`,`${nm(w[0],cpu&&cpu[w[0]])} gagn !`):'🤝 '+L3('Égalité !','It’s a tie!','Egalite !')};
+const againBtn=()=>`<button class="btn gobtn" style="--band:var(--pink);--band2:var(--violet)" data-fam="again">↻ ${L3('Rejouer','Play again','Rezwe')}</button>`;
+
+/* ---- Duel de réflexes ---- */
+function famReact(g,cfg){
+  const N=cfg.n,ROUNDS=5;let sc,round,state,rid=0,t0=0;
+  const html=()=>famFrame(g,`<div class="rx wait" id="rx"><p class="rxm" id="rxm"></p>
+    <div class="rxpads n${N}">${Array.from({length:N},(_,i)=>`<button class="rxp" data-i="${i}" style="--pc:${PCOL[i]}"><span class="rxe">${PEMO[i]}</span><b>${esc(nm(i))}</b><em id="rs${i}">${sc[i]}</em></button>`).join('')}</div>
+    <p class="rxr" id="rxr"></p><div id="rxc"></div></div>`,true);
+  const msg=(m,cls)=>{const e=$('#rx');if(!e)return;e.className='rx '+cls;$('#rxm').textContent=m};
+  const upd=()=>{sc.forEach((v,i)=>{const e=$('#rs'+i);if(e)e.textContent=v});const r=$('#rxr');if(r)r.textContent=`${L3('Manche','Round','Manch')} ${Math.min(round+1,ROUNDS)}/${ROUNDS}`};
+  const start=()=>{
+    const my=++rid;state='wait';upd();msg(L3('Attends le VERT…','Wait for GREEN…','Rann VER…'),'wait');
+    famTimer(()=>{if(my!==rid||state!=='wait')return;state='go';t0=performance.now();msg(L3('TOUCHE !','TAP!','TOUSE !'),'go');tone(880,.12,'square',0,.1)},rnd(1500,4200));
+  };
+  const tap=i=>{
+    if(state==='wait'){state='fs';rid++;sc[i]=Math.max(0,sc[i]-1);upd();sndBad();msg(L3(`${nm(i)} : trop tôt ! −1`,`${nm(i)}: too early! −1`,`${nm(i)} : tro bonnaler ! −1`),'bad');famTimer(start,1600)}
+    else if(state==='go'){
+      state='won';rid++;const ms=Math.round(performance.now()-t0);sc[i]++;round++;upd();sndOk();
+      msg(`${PEMO[i]} ${nm(i)} +1 · ${ms} ms`,'won');
+      if(round>=ROUNDS)famTimer(finish,1400);else famTimer(start,1800);
+    }
+  };
+  const finish=()=>{state='end';msg(winLine(sc),'won');$('#rxc').innerHTML=againBtn();famEnd(g,topOf(sc)[0],true)};
+  const init=()=>{sc=Array(N).fill(0);round=0;state='idle';html();
+    document.querySelectorAll('.rxp').forEach(b=>b.addEventListener('pointerdown',e=>{e.preventDefault();tap(+b.dataset.i)}));
+    famTimer(start,900)};
+  FAM.click=a=>{if(a==='again')init()};
+  init();
+}
+
+/* ---- Mémoire duel ---- */
+function famMemD(g,cfg){
+  const N=cfg.n,EM=['🐶','🐱','🦊','🐼','🐸','🦁','🐙','🦄','🐢','🦋'],P=N>2?10:8;
+  let cards,open,sc,t,lock,left;
+  const body=()=>{const e=$('#mdb');if(!e)return;
+    e.innerHTML=`${scoreBd(N,sc,t)}<div class="mdgrid c${P===10?5:4}">${cards.map((c,k)=>`<button class="mdc${c.f||c.m?' up':''}${c.m?' ok':''}" data-fam="c" data-c="${k}" aria-label="${c.f||c.m?c.e:'?'}">${c.f||c.m?c.e:'❓'}</button>`).join('')}</div>
+    <p class="mdmsg">${left?L3(`À toi, ${nm(t)} !`,`${nm(t)}, your turn!`,`Ou tour, ${nm(t)} !`):winLine(sc)}</p>${left?'':againBtn()}`};
+  const init=()=>{cards=shuffle([...EM.slice(0,P),...EM.slice(0,P)]).map(e=>({e,f:false,m:false}));open=[];sc=Array(N).fill(0);t=0;lock=false;left=P;
+    famFrame(g,`<div id="mdb"></div>`,true);body()};
+  FAM.click=(a,b)=>{
+    if(a==='again'){init();return}
+    if(a!=='c'||lock||!left)return;
+    const k=+b.dataset.c,c=cards[k];if(c.f||c.m)return;
+    c.f=true;open.push(k);tone(500+open.length*120,.08,'triangle',0,.08);body();
+    if(open.length===2){
+      lock=true;const [x,y]=open;
+      famTimer(()=>{
+        if(cards[x].e===cards[y].e){cards[x].m=cards[y].m=true;sc[t]++;left--;sndOk();if(!left){body();famEnd(g,topOf(sc)[0],true)}}
+        else{sndBad();t=(t+1)%N}
+        cards[x].f=cards[y].f=false;open=[];lock=false;body();
+      },950);
+    }
+  };
+  init();
+}
+
+/* ---- Quiz en famille ---- */
+function famQuizF(g,cfg){
+  const N=cfg.n,PER=4,TOT=N*PER;let turn,sc,item,locked;
+  const pool=gamesForBand().filter(x=>x.make);
+  const draw=()=>{
+    if(turn>=TOT){famFrame(g,`<div class="qcard"><div class="vis">🏆</div><p class="q">${winLine(sc)}</p></div>${scoreBd(N,sc,-1)}${againBtn()}`,true);famEnd(g,topOf(sc)[0],true);return}
+    const pi=turn%N;
+    let it=null;for(let n=0;n<8&&!it;n++){try{it=(pick(pool.length?pool:GAMES.filter(x=>x.make)).make())()}catch(e){it=null}}
+    item=it;locked=false;
+    const long=it.opts.some(o=>String(o.t).replace(/<[^>]+>/g,'').length>13),cols=it.cols||(long?1:2);
+    famFrame(g,`<div class="turnbar"><span class="pdot" style="background:${PCOL[pi]}">${PEMO[pi]}</span><b>${L3(`À toi, ${esc(nm(pi))} !`,`${esc(nm(pi))}, your turn!`,`Ou tour, ${esc(nm(pi))} !`)}</b><span class="qn">${Math.floor(turn/N)+1}/${PER}</span></div>
+      <div class="qcard">${it.vis?`<div class="vis">${it.vis}</div>`:''}<p class="q">${it.q}</p></div>
+      <div class="opts c${cols}${it.small?' small':''}">${it.opts.map((o,k)=>`<button class="opt" data-fam="o" data-k="${k}"${o.label?` aria-label="${esc(o.label)}"`:''}>${o.t}</button>`).join('')}</div>${scoreBd(N,sc,pi)}`,true);
+  };
+  const init=()=>{turn=0;sc=Array(N).fill(0);draw()};
+  FAM.click=(a,b)=>{
+    if(a==='again'){init();return}
+    if(a!=='o'||locked)return;
+    locked=true;const k=+b.dataset.k,ok=item.opts[k].v===item.a,pi=turn%N;
+    b.classList.add(ok?'ok':'no');
+    if(ok){sc[pi]++;sndOk()}else{sndBad();const all=document.querySelectorAll('.opt');item.opts.forEach((o,j)=>{if(o.v===item.a&&all[j])all[j].classList.add('ok')})}
+    turn++;famTimer(draw,1300);
+  };
+  init();
+}
+
+/* ---- Cochon (dés) : tente ta chance, garde tes points ---- */
+function famPig(g,cfg){
+  const N=cfg.n,GOAL=50,cpu=Array.from({length:N},(_,i)=>i>0&&cfg.cpu[i]);
+  let sc,pts,t,busy,over,line;
+  const render=()=>{const e=$('#pgb');if(!e)return;
+    e.innerHTML=`${scoreBd(N,sc,over?-1:t,cpu)}
+      <div class="pigpan"><p class="pigl">${esc(line)}</p><div class="pigpts"><small>${L3('Points du tour','Turn points','Pwen tour')}</small><b>${pts}</b></div>
+      ${over?againBtn():`<div class="pigbtns"><button class="btn" data-fam="roll"${busy||cpu[t]?' disabled':''}>🎲 ${L3('Lancer','Roll','Lans')}</button><button class="btn alt" data-fam="hold"${busy||cpu[t]||!pts?' disabled':''}>✋ ${L3('Garder','Keep','Gard')}</button></div>`}</div>
+      <p class="mdmsg">${L3(`Premier à ${GOAL} points`,`First to ${GOAL} points`,`Premye ek ${GOAL} pwen`)}</p>`};
+  const turnLine=()=>L3(`À toi, ${nm(t,cpu[t])} !`,`${nm(t,cpu[t])}, your turn!`,`Ou tour, ${nm(t,cpu[t])} !`);
+  const next=()=>{t=(t+1)%N;pts=0;busy=false;line=turnLine();render();if(cpu[t])famTimer(roll,1000)};
+  const hold=()=>{
+    if(over||busy||!pts)return;sc[t]+=pts;sndOk();
+    if(sc[t]>=GOAL){over=true;line=winLine(sc,cpu);pts=0;render();famEnd(g,t,!cpu[t]);return}
+    next();
+  };
+  const roll=()=>{
+    if(over||busy)return;busy=true;render();
+    const bd=$('#bd'),die=$('#bdd');bd.hidden=false;bd.classList.remove('fade');$('#bdl').textContent=nm(t,cpu[t]);
+    dicePop(die,()=>{
+      const r=rnd(1,6);die.textContent=DICE[r-1];$('#bdl').textContent=nm(t,cpu[t])+' · '+r;
+      setTimeout(()=>{bd.classList.add('fade');setTimeout(()=>{bd.hidden=true},450)},900);
+      if(r===1){pts=0;line='💥 '+L3('Un 1 ! Tour perdu','A 1! Turn lost','Enn 1 ! Tour perdi');sndBad();render();famTimer(next,1500)}
+      else{pts+=r;line=`+${r}`;busy=false;render();
+        if(cpu[t])famTimer(()=>{if(pts>=(cfg.lvl==='hard'?20:14)||sc[t]+pts>=GOAL)hold();else roll()},1300)}
+    });
+  };
+  const init=()=>{sc=Array(N).fill(0);pts=0;t=0;busy=false;over=false;line=turnLine();
+    famFrame(g,`<div id="pgb"></div><div class="bigdice" id="bd" hidden><span id="bdd">🎲</span><b id="bdl"></b></div>`,true);render();if(cpu[t])famTimer(roll,1000)};
+  FAM.click=a=>{if(a==='again'){init();return}if(cpu[t]||over)return;if(a==='roll')roll();else if(a==='hold')hold()};
+  init();
+}
+Object.assign(FAMG,{react:famReact,memd:famMemD,quizf:famQuizF,pig:famPig});
+Object.assign(FAMSPEC,{react:{min:2,max:4,nocpu:true},memd:{min:2,max:4,nocpu:true},quizf:{min:2,max:6,nocpu:true},pig:{min:2,max:6,lvl:true}});
 /* ====================== Statistiques, trophées, contrôle parental ====================== */
 const dayKey=(d=new Date())=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
 let STATS=Object.assign({plays:0,games:{},cats:{},fam:0,famwin:0,famWinGames:{},arcwin:0,arcLevel:0,art:{},pops:0,days:[],langs:{}},store.get('stats',{})||{});
@@ -4066,6 +4275,15 @@ function profSwitch(id){
   Object.entries(t.snap||{}).forEach(([k,v])=>store.set(k,v));
   store.set('pid',id);profReload();
 }
+function profNewWith(o){
+  profSave();profClear();
+  const id='p'+Date.now().toString(36);
+  const snap={age:o.age,band:bandOf(o.age),name:o.name,avatar:o.avatar};
+  PROFILES.push({id,name:o.name,avatar:o.avatar,age:o.age,stars:0,tro:0,snap});
+  store.set('profiles',PROFILES);
+  Object.entries(snap).forEach(([k,v])=>store.set(k,v));
+  store.set('pid',id);profReload();
+}
 function profNew(){profSave();profClear();store.set('pid',null);profReload()}
 function profDelete(id){
   const i=PROFILES.findIndex(p=>p.id===id);if(i<0)return;
@@ -4095,7 +4313,11 @@ GAMES.push(
   {id:'f-ttt',type:'fam',fam:'ttt',bands:NOBABY,icon:'❌',name:['Morpion','Noughts and crosses','Morpyon'],desc:['Aligne trois signes','Line up three in a row','Aliny 3 mem sign']},
   {id:'f-c4',type:'fam',fam:'c4',bands:NOBABY,icon:'🔴',name:['4 en ligne','Four in a row','4 dan enn liny'],desc:['Aligne quatre jetons','Line up four discs','Aliny 4 zeton']},
   {id:'f-snl',type:'fam',fam:'snl',bands:NOBABY,icon:'🐍',name:['Serpents et échelles','Snakes and ladders','Serpan ek ledsel'],desc:['Monte les échelles, évite les serpents','Climb ladders, dodge snakes','Monte ledsel, evit serpan']},
-  {id:'f-lud',type:'fam',fam:'ludo',bands:NOBABY,icon:'🎲',name:['Petits chevaux','Ludo','Ti seval'],desc:['2 à 4 joueurs, fais le tour du plateau','2 to 4 players, race around the board','2 a 4 zoueur, fer tour plato']}
+  {id:'f-lud',type:'fam',fam:'ludo',bands:NOBABY,icon:'🎲',name:['Petits chevaux','Ludo','Ti seval'],desc:['2 à 4 joueurs, fais le tour du plateau','2 to 4 players, race around the board','2 a 4 zoueur, fer tour plato']},
+  {id:'f-rx',type:'fam',fam:'react',bands:NOBABY,icon:'⚡',name:['Duel de réflexes','Reflex duel','Duel refleks'],desc:['Le plus rapide gagne la manche','Fastest finger wins the round','Pli vit gagn manch']},
+  {id:'f-mem',type:'fam',fam:'memd',bands:NOBABY,icon:'🧠',name:['Mémoire duel','Memory duel','Memwar duel'],desc:['Trouve le plus de paires','Find the most pairs','Trouv pli boukou pair']},
+  {id:'f-qz',type:'fam',fam:'quizf',bands:NOBABY,icon:'🎤',name:['Quiz en famille','Family quiz','Kwiz an fami'],desc:['À chacun son tour, qui sait le plus ?','Take turns: who knows most?','Chakin so tour : kisannla konn pli ?']},
+  {id:'f-pig',type:'fam',fam:'pig',bands:NOBABY,icon:'🐷',name:['Cochon (dés)','Pig (dice)','Koson (de)'],desc:['Tente ta chance, garde tes points','Press your luck, keep your points','Tent ou sans, gard ou pwen']}
 );
 function launch(g){
   track('play',g.id);S.lastId=g.id;store.set('last',g.id);
@@ -4356,6 +4578,22 @@ function viewPlayers(){
   </section>`;
   paintHeader();window.scrollTo(0,0);
 }
+let NP={av:AVATARS[1],age:7};
+function viewNewPlayer(){
+  arcStop();S.view='newplayer';
+  app.innerHTML=`<section class="agepage prof" style="${bs(BANDS[S.band]||BANDS[0])}">
+    <button class="back" data-act="players" style="align-self:flex-start">‹ ${L3('Classement','Leaderboard','Klasman')}</button>
+    <div class="avbig" id="npav" aria-hidden="true">${NP.av}</div>
+    <h1>${L3('Nouveau joueur','New player','Nouvo zoueur')}</h1><p class="lead">${L3('Comment s’appelle-t-il ou elle ?','What is the name?','Ki so non ?')}</p>
+    <input id="npName" class="namein" type="text" maxlength="12" autocomplete="off" autocapitalize="words" spellcheck="false" placeholder="${U('namePh')}" aria-label="${U('namePh')}">
+    <p class="set-t" style="margin-top:14px">${L3('Âge','Age','Laz')}</p>
+    <div class="chips npages">${Array.from({length:19},(_,a)=>`<button class="lm${a===NP.age?' on':''}" data-nage="${a}">${ageLabel(a)}</button>`).join('')}</div>
+    <p class="set-t" style="margin-top:14px">${U('pickHero')}</p>
+    <div class="avgrid">${AVATARS.map(a=>`<button class="avb${a===NP.av?' on':''}" data-nav="${a}" aria-label="${a}">${a}</button>`).join('')}</div>
+    <button class="btn gobtn" style="--band:var(--pink);--band2:var(--violet)" data-act="pcreate">${L3('Créer le joueur','Create player','Kree zoueur')} ✓</button>
+  </section>`;
+  window.scrollTo(0,0);
+}
 function viewTrophies(){
   arcStop();S.view='trophies';Q=null;M=null;
   const n=Object.keys(UNL).length;
@@ -4386,6 +4624,28 @@ function parentHTML(){
     <p class="hint">${PAR.pin?L3('Le code débloque l’app quand le temps est écoulé.','The code unlocks the app when time is up.','Kod la debloke app kan tan fini.'):L3('Crée un code pour activer le temps d’écran.','Create a code to enable screen time.','Kree enn kod pou aktive tan ekran.')}</p></div>
   <div class="set"><button class="btn alt" data-act="locknow" style="width:100%">😴 ${L3('Faire une pause maintenant','Take a break now','Fer enn pozz aster')}</button></div>`;
 }
+/* Orientation : auto / portrait / paysage */
+let ORI=store.get('ori','auto');if(!['auto','portrait','landscape'].includes(ORI))ORI='auto';
+function flash(msg){
+  const e=document.createElement('div');e.className='flash';e.textContent=msg;document.body.appendChild(e);
+  setTimeout(()=>e.classList.add('out'),2600);setTimeout(()=>e.remove(),3200);
+}
+async function applyOri(mode,say){
+  ORI=mode;store.set('ori',mode);
+  const so=window.screen&&screen.orientation;
+  try{
+    if(!so)throw 0;
+    if(mode==='auto'){so.unlock&&so.unlock();if(document.fullscreenElement&&document.exitFullscreen)await document.exitFullscreen().catch(()=>{})}
+    else{
+      const standalone=matchMedia('(display-mode: standalone)').matches||matchMedia('(display-mode: fullscreen)').matches;
+      if(!standalone&&!document.fullscreenElement&&document.documentElement.requestFullscreen)await document.documentElement.requestFullscreen().catch(()=>{});
+      await so.lock(mode);
+    }
+  }catch(e){
+    if(say&&mode!=='auto')flash(L3('Ce téléphone ne permet pas de forcer l’écran : active la rotation automatique et tourne-le.','This phone cannot force the screen: turn on auto-rotate and turn it.','Telefonn pa kapav fors ekran : aktiv rotasyon otomatik e tourn li.'));
+  }
+}
+addEventListener('pointerdown',()=>{if(ORI!=='auto')applyOri(ORI,false)},{once:true,capture:true});
 function paintSheet(){
   const el=$('#sheet');if(!el||!SHEET)return;
   if(SMODE==='parent'){el.innerHTML=`<div class="sheet-bg" data-act="sclose"></div><div class="sheet-box" role="dialog" aria-modal="true" aria-label="${U('parents')}">${parentHTML()}</div>`;return}
@@ -4399,6 +4659,7 @@ function paintSheet(){
       <div class="volrow"><button class="mute" data-act="mute" aria-pressed="${!SOUND}" aria-label="${U(SOUND?'soundOn':'soundOff')}">${SOUND?IC.on:IC.off}</button>
       <input type="range" id="volRange" min="0" max="100" step="5" value="${Math.round(VOL*100)}" aria-label="${U('setVol')}"><output id="volOut">${Math.round(VOL*100)}%</output></div>
       <div class="chips" style="margin-top:10px">${tgl('mus',MUS_ON,'🎵 '+U('music'))}${tgl('sfx',SFX,'🔔 '+U('effects'))}${tgl('voice',VOICE,'🗣️ '+U('voice'))}</div></div>
+    <div class="set"><p class="set-t">📱 ${L3('Écran','Screen','Ekran')}</p>${seg([['auto',L3('Auto','Auto','Auto')],['portrait',L3('Portrait','Portrait','Portre')],['landscape',L3('Paysage','Landscape','Peizaz')]],ORI,'ori')}</div>
     <div class="set"><p class="set-t">${U('setLang')}</p>${seg(LKEYS.map(k=>[k,LANG_LABELS[k]]),LANG,'lang')}</div>
     <div class="set"><button class="btn alt" data-act="parents" style="width:100%">🔒 ${U('parents')}</button></div>
   </div>`;
@@ -4555,6 +4816,8 @@ function showResult(stars,sub){
 app.addEventListener('click',e=>{
   const t=e.target.closest('button');if(!t)return;
   if(t.dataset.cat){viewCat(t.dataset.cat);return}
+  if(t.dataset.nav){NP.av=t.dataset.nav;app.querySelectorAll('[data-nav]').forEach(b=>b.classList.toggle('on',b.dataset.nav===NP.av));const x=$('#npav');if(x)x.textContent=NP.av;return}
+  if(t.dataset.nage!==undefined){NP.age=+t.dataset.nage;app.querySelectorAll('[data-nage]').forEach(b=>b.classList.toggle('on',+b.dataset.nage===NP.age));return}
   if(t.dataset.pid){if(t.dataset.pid===PID){sndOk();confetti();return}sndOk();profSwitch(t.dataset.pid);return}
   if(t.dataset.pdel){
     if(t.dataset.armed){profDelete(t.dataset.pdel);if(S.view==='players')viewPlayers();return}
@@ -4573,7 +4836,8 @@ app.addEventListener('click',e=>{
   if(act==='hub'){viewHub();return}
   if(act==='trophies'){viewTrophies();return}
   if(act==='players'){viewPlayers();return}
-  if(act==='pnew'){sndOk();profNew();return}
+  if(act==='pnew'){sndOk();NP.av=AVATARS[(PROFILES.length+1)%AVATARS.length];viewNewPlayer();return}
+  if(act==='pcreate'){const n=(($('#npName')||{}).value||'').trim().slice(0,12);if(!n){const i=$('#npName');if(i){i.focus();i.classList.add('shake')}return}sndWin();profNewWith({name:n,avatar:NP.av,age:NP.age});return}
   if(act==='parents'){if(SHEET)closeSheet();parentGate(()=>openSheet('parent'));return}
   if(act==='go'){startShow();return}
   if(act==='skip'){viewHub();return}
@@ -4585,9 +4849,11 @@ app.addEventListener('click',e=>{
   else if(act==='replay'&&CUR)launch(CUR);
 });
 $('#homeBtn').addEventListener('click',()=>{if(AGE!==null)viewHub();else viewHome()});
+$('#rotBtn').addEventListener('click',()=>{const w=innerWidth>innerHeight;applyOri(w?'portrait':'landscape',true)});
 $('#gearBtn').addEventListener('click',()=>SHEET?closeSheet():openSheet());
 $('#sheet').addEventListener('click',e=>{
-  const t=e.target.closest('[data-act],[data-theme],[data-lang],[data-lim],[data-tg]');if(!t)return;
+  const t=e.target.closest('[data-act],[data-theme],[data-lang],[data-lim],[data-tg],[data-ori]');if(!t)return;
+  if(t.dataset.ori){applyOri(t.dataset.ori,true);paintSheet();return}
   const act=t.dataset.act;
   if(act==='sclose'){closeSheet();return}
   if(act==='smain'){SMODE='main';paintSheet();return}
@@ -4665,20 +4931,56 @@ addEventListener('blur',()=>{if(document.hidden)goBackground()});
 applyTheme();markDay();emStart();
 
 /* ---------- Écran d'ouverture : logo néon "Azhar Shahim" ---------- */
+
+function naelScene(){
+  const stars=Array.from({length:34},()=>`<circle class="ns" cx="${rnd(4,396)}" cy="${rnd(6,230)}" r="${(Math.random()*1.4+.4).toFixed(1)}" style="animation-delay:-${(Math.random()*3).toFixed(1)}s"/>`).join('');
+  const pine=(x,y,k,c)=>`<g transform="translate(${x} ${y}) scale(${k})"><rect x="-3" y="0" width="6" height="12" fill="#5b3a1e"/><polygon points="0,-46 -17,-12 17,-12" fill="${c}"/><polygon points="0,-32 -21,2 21,2" fill="${c}"/><polygon points="0,-18 -25,14 25,14" fill="${c}" opacity=".95"/></g>`;
+  const fl=Array.from({length:26},()=>{const y=rnd(600,790),x=rnd(6,394);return `<circle cx="${x}" cy="${y}" r="${(1.6+(y-590)/90).toFixed(1)}" fill="${pick(['#ff5d8f','#ffe14d','#fff','#ff9f1c','#d946ef'])}"/>`}).join('');
+  const rb=['#ff3b3b','#ff9f1c','#ffe14d','#4ade80','#22d3ee','#6366f1','#d946ef'].map((c,k)=>`<circle cx="250" cy="540" r="${300-k*7}" fill="none" stroke="${c}" stroke-width="7" opacity=".34"/>`).join('');
+  return `<svg class="nael-bg" viewBox="${innerWidth>innerHeight*1.2?'0 330 400 280':'0 0 400 800'}" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+  <defs>
+    <linearGradient id="nSky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#140f5c"/><stop offset=".3" stop-color="#5b2fb0"/><stop offset=".5" stop-color="#ff5fa2"/><stop offset=".62" stop-color="#ff9f5a"/><stop offset=".7" stop-color="#ffe08a"/></linearGradient>
+    <radialGradient id="nSun"><stop offset="0" stop-color="#fffbe0"/><stop offset=".35" stop-color="#ffe27a" stop-opacity=".9"/><stop offset="1" stop-color="#ff9f5a" stop-opacity="0"/></radialGradient>
+    <linearGradient id="nSea" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffb27a"/><stop offset=".25" stop-color="#2fb4e8"/><stop offset="1" stop-color="#0a4f9e"/></linearGradient>
+    <linearGradient id="nLand" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#43b26b"/><stop offset="1" stop-color="#0f5d3a"/></linearGradient>
+    <linearGradient id="nMtn1" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8a63d6"/><stop offset="1" stop-color="#e58fb8"/></linearGradient>
+    <linearGradient id="nMtn2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3f3c9e"/><stop offset="1" stop-color="#2a8aa8"/></linearGradient>
+    <linearGradient id="nRiv" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#9be7ff"/><stop offset="1" stop-color="#2aa4e8"/></linearGradient>
+  </defs>
+  <rect width="400" height="800" fill="url(#nSky)"/>
+  ${stars}
+  <circle cx="290" cy="448" r="120" fill="url(#nSun)" class="nsun"/>
+  <circle cx="290" cy="448" r="40" fill="#fffbe0"/>
+  ${rb}
+  <g class="ncl c1"><ellipse cx="80" cy="130" rx="46" ry="13" fill="#fff" opacity=".8"/><ellipse cx="108" cy="122" rx="30" ry="12" fill="#fff" opacity=".8"/></g>
+  <g class="ncl c2"><ellipse cx="300" cy="190" rx="52" ry="14" fill="#ffd9ec" opacity=".75"/><ellipse cx="270" cy="182" rx="30" ry="11" fill="#ffd9ec" opacity=".75"/></g>
+  <path d="M0 470 L0 350 L44 300 L74 340 L120 262 L170 350 L214 318 L262 410 L262 470Z" fill="url(#nMtn1)"/>
+  <path d="M120 262 L106 284 L120 278 L134 288Z M44 300 L35 314 L46 309 L55 318Z" fill="#fff" opacity=".9"/>
+  <rect x="0" y="448" width="400" height="140" fill="url(#nSea)"/>
+  <g class="nwv">${Array.from({length:9},(_,k)=>`<path d="M${(k*53)%380} ${462+k*13} q10 -6 20 0 t20 0 t20 0" fill="none" stroke="#fff" stroke-width="1.6" opacity=".55"/>`).join('')}</g>
+  <g opacity=".7">${Array.from({length:7},(_,k)=>`<rect x="${284-k*2}" y="${452+k*9}" width="${12+k*5}" height="2.4" rx="1.2" fill="#fff6c8" class="nrf" style="animation-delay:-${k*.3}s"/>`).join('')}</g>
+  <path d="M0 520 L0 410 L58 330 L108 400 L168 300 L240 420 L300 520Z" fill="url(#nMtn2)"/>
+  <path d="M168 300 L146 336 L166 326 L182 342 L192 326Z M58 330 L44 354 L58 348 L70 358Z" fill="#fff" opacity=".92"/>
+  <path d="M0 528 C70 505 130 535 200 552 C270 568 330 560 400 590 L400 800 L0 800Z" fill="url(#nLand)"/>
+  <path d="M150 440 C165 470 135 495 152 524" fill="none" stroke="url(#nRiv)" stroke-width="5" stroke-linecap="round"/>
+  <g fill="none" stroke="url(#nRiv)" stroke-linecap="round">
+    <path d="M152 524 C165 540 200 548 192 580" stroke-width="12"/>
+    <path d="M192 580 C182 620 128 628 150 676" stroke-width="24"/>
+    <path d="M150 676 C170 716 232 724 214 806" stroke-width="42"/>
+  </g>
+  <g fill="none" stroke="#fff" stroke-linecap="round" stroke-dasharray="6 16" opacity=".75" class="nrv">
+    <path d="M152 524 C165 540 200 548 192 580 C182 620 128 628 150 676 C170 716 232 724 214 806" stroke-width="3"/>
+  </g>
+  ${pine(40,610,1,'#1f7a4a')}${pine(88,632,.8,'#2a9157')}${pine(330,600,.9,'#1f7a4a')}${pine(370,640,1.2,'#176b41')}${pine(300,660,.7,'#2a9157')}
+  ${pine(30,720,1.7,'#145c38')}${pine(352,740,1.9,'#145c38')}${pine(90,770,1.2,'#1f7a4a')}
+  ${fl}
+  <g class="nbd"><path d="M60 210 q8 -9 16 0 q8 -9 16 0" fill="none" stroke="#2b1d6b" stroke-width="2.2" stroke-linecap="round"/><path d="M110 240 q6 -7 12 0 q6 -7 12 0" fill="none" stroke="#2b1d6b" stroke-width="2" stroke-linecap="round"/><path d="M330 250 q7 -8 14 0 q7 -8 14 0" fill="none" stroke="#2b1d6b" stroke-width="2" stroke-linecap="round"/></g>
+  </svg>`;
+}
 function showSplash(done){
   if(store.get('nosplash',false)||location.hash==='#nosplash'){done();return}
-  const word=(s,d0)=>s.split('').map((ch,i)=>`<i style="--i:${i+d0}">${ch}</i>`).join('');
-  const el=document.createElement('div');el.id='splash';el.className='splash';el.setAttribute('role','presentation');
-  el.innerHTML=`<div class="sp-grid"></div><div class="sp-glow"></div><div class="sp-flash"></div>
-  <div class="sp-stage">
-    <svg class="sp-logo" viewBox="0 0 200 200" aria-hidden="true"><defs><linearGradient id="spg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#00f5ff"/><stop offset=".5" stop-color="#ff2bd6"/><stop offset="1" stop-color="#b6ff00"/></linearGradient></defs>
-      <polygon class="sp-hex" points="100,12 176,56 176,144 100,188 24,144 24,56" fill="none" stroke="url(#spg)" stroke-width="6" stroke-linejoin="round" pathLength="100"/>
-      <polygon class="sp-hex2" points="100,32 158,66 158,134 100,168 42,134 42,66" fill="none" stroke="url(#spg)" stroke-width="2.5" stroke-linejoin="round" pathLength="100"/>
-      <text x="100" y="124" text-anchor="middle" class="sp-as" fill="url(#spg)">AS</text>
-    </svg>
-    <h1 class="sp-name"><span class="w">${word('Azhar',0)}</span> <span class="w">${word('Shahim',5)}</span></h1>
-    <p class="sp-sub">${L3('Jeux · Apprentissage · Famille','Games · Learning · Family','Zwe · Aprantisaz · Fami')}</p>
-  </div>
+  const el=document.createElement('div');el.id='splash';el.className='splash nael';el.setAttribute('role','presentation');
+  el.innerHTML=naelScene()+`<h1 class="nael-t" aria-label="Naël">${'Naël'.split('').map((c,k)=>`<i style="--i:${k}">${c}</i>`).join('')}</h1>
   <p class="sp-tap">${L3('Touche pour entrer','Tap to enter','Touse pou antre')}</p>`;
   document.body.appendChild(el);
   let started=false,ended=false,t0=0;
