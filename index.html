@@ -5564,7 +5564,7 @@ function showSplash(done){
 /* ---------- barre de navigation moderne ---------- */
 function paintNav(){
   let n=document.getElementById('bnav');
-  if(!n){n=document.createElement('nav');n.id='bnav';n.setAttribute('aria-label','Navigation');document.body.appendChild(n)}
+  if(!n){n=document.createElement('nav');n.id='bnav';n.setAttribute('aria-label','Navigation');document.body.appendChild(n);n.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;const a=b.dataset.act;try{leaveFs()}catch(x){}sndOk();({hub:viewHub,village:viewVillage,players:viewPlayers,trophies:viewTrophies})[a]()})}
   const show=AGE!==null&&['hub','cat','village','players','trophies'].includes(S.view)&&!document.body.classList.contains('arcplay');
   document.body.classList.toggle('hasnav',show);
   if(!show)return;

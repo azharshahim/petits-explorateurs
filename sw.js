@@ -1,5 +1,5 @@
 // Service worker : fait fonctionner l'appli sans connexion après la première visite.
-const CACHE = 'petits-explorateurs-v14';
+const CACHE = 'petits-explorateurs-v15';
 const FILES = ['./', 'index.html', 'manifest.webmanifest', 'icons/icon-192.png', 'icons/icon-512.png', 'icons/icon-maskable-512.png', 'icons/apple-touch-icon.png'];
 
 self.addEventListener('install', e => {
