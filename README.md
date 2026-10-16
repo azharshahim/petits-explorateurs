@@ -35,3 +35,5 @@ Après la première visite, l'appli fonctionne sans connexion grâce à `sw.js`.
 ## Personnages et droits
 
 Les jeux d'arcade reprennent des mécaniques classiques (plateforme, tir, course, blocs) avec des personnages et des noms originaux.
+
+- **Ouverture** : écran néon « Azhar Shahim » avec jingle. **Kart** : 5 véhicules (voiture, moto, tracteur, buggy, camion à glaces), cadeaux surprise (bouclier, turbo, bonbons, vie), avions et montgolfières. **Musiques** : boucles originales dans le style lo-fi, EDM, phonk et synthwave.
