@@ -830,7 +830,20 @@ body.hasnav .vscene{width:min(100%,calc((100dvh - 330px)*360/440),520px)}
 :root[data-theme="dark"] #bnav{background:rgba(26,30,87,.75);border-color:rgba(255,255,255,.15)}
 @media(orientation:landscape) and (max-height:620px){#bnav{display:none!important}body.hasnav .wrap{padding-bottom:0}body.hasnav .hcard{min-height:clamp(76px,22dvh,120px)}body.hasnav .vscene{width:min(46vw,calc((100dvh - 80px)*360/440))}}
 @media(prefers-reduced-motion:reduce){body::before,#app>section{animation:none}}
-body:has(#cv) #bnav,body:has(.pads) #bnav,body:has(.sheet:not([hidden])) #bnav{display:none!important}body:has(#cv).hasnav .wrap{padding-bottom:0}
+body:has(#cv) #bnav,body:has(.mstage) #bnav,body:has(.pads) #bnav,body:has(.sheet:not([hidden])) #bnav{display:none!important}body:has(#cv).hasnav .wrap,body:has(.mstage).hasnav .wrap{padding-bottom:0}
+
+/* Montessori */
+.mstage{display:flex;justify-content:center;margin-top:10px}
+.msvg{width:min(100%,calc((100dvh - 330px)*360/420),460px);height:auto;touch-action:none;user-select:none;-webkit-user-select:none;border-radius:28px;background:linear-gradient(#fff,#f6f1ff);border:3px solid var(--line);box-shadow:var(--shadow)}
+.msvg .drg,.msvg .mblk,.msvg .mopt,.msvg .mcell{cursor:grab;transform-box:fill-box}
+.msvg .drg.lift{filter:drop-shadow(0 8px 6px rgba(0,0,0,.3))}
+.msvg .drg.done{cursor:default}
+.msvg .mblk.done{filter:drop-shadow(0 3px 3px rgba(0,0,0,.2))}
+.msvg .mopt:active{opacity:.8}
+.mshk{animation:shake .35s}
+.mcan{display:block;margin:10px auto 0;max-width:100%;border-radius:28px;border:3px solid var(--line);box-shadow:var(--shadow);touch-action:none;background:#fff8ec}
+.hubgrid>.hcard:last-child:nth-child(odd){grid-column:1/-1}
+
 </style>
 
 </head>
@@ -4228,7 +4241,7 @@ let UNL=store.get('trophies',{})||{};
 let VIL=Object.assign({v:0,st:[0,0,0,0,0],blocks:0,total:0,built:0,done:0,gift:0,streak:0},store.get('village',{})||{});
 if(!Array.isArray(VIL.st)||VIL.st.length!==5)VIL.st=[0,0,0,0,0];
 const saveVil=()=>store.set('village',VIL);
-function catOf(g){return g.arc?'arcade':g.type==='art'?(g.cat||'create'):g.type==='fam'?'family':'learn'}
+function catOf(g){return g.type==='mont'?'mont':g.arc?'arcade':g.type==='art'?(g.cat||'create'):g.type==='fam'?'family':'learn'}
 function markDay(){
   const k=dayKey();
   if(!STATS.days.includes(k)){STATS.days.push(k);STATS.days=STATS.days.slice(-60)}
@@ -4876,8 +4889,250 @@ GAMES.push(
 );
 function launch(g){
   track('play',g.id);S.lastId=g.id;store.set('last',g.id);
-  g.arc?startArcade(g):g.type==='memory'?startMemory(g):g.type==='art'?startArt(g):g.type==='fam'?startFam(g):startQuiz(g);
+  g.arc?startArcade(g):g.type==='memory'?startMemory(g):g.type==='art'?startArt(g):g.type==='fam'?startFam(g):g.type==='mont'?startMont(g):startQuiz(g);
 }
+/* ====================== Montessori : jeux calmes, en vectoriel HD ====================== */
+const MCOL=[['#ef4444',['Rouge','Red','Rouz']],['#3b82f6',['Bleu','Blue','Ble']],['#22c55e',['Vert','Green','Ver']],['#facc15',['Jaune','Yellow','Zonn']],['#a855f7',['Violet','Purple','Violet']],['#fb923c',['Orange','Orange','Oranz']]];
+const MSHP=['circle','square','tri','star','heart','hex','dia'];
+const mInk='#1b1745';
+function mShp(k,r,f,ex){
+  const st=`fill="${f}" stroke="${mInk}" stroke-width="3" stroke-linejoin="round" vector-effect="non-scaling-stroke" ${ex||''}`;
+  const poly=pts=>`<polygon points="${pts.map(p=>p.join(',')).join(' ')}" ${st}/>`;
+  if(k==='circle')return `<circle r="${r}" ${st}/>`;
+  if(k==='square')return `<rect x="${-r}" y="${-r}" width="${2*r}" height="${2*r}" rx="${r*.18}" ${st}/>`;
+  if(k==='tri')return poly([[0,-r],[r*1.05,r*.8],[-r*1.05,r*.8]]);
+  if(k==='dia')return poly([[0,-r*1.15],[r*.8,0],[0,r*1.15],[-r*.8,0]]);
+  if(k==='hex')return poly(Array.from({length:6},(_,i)=>[+(Math.cos(i*Math.PI/3)*r*1.05).toFixed(1),+(Math.sin(i*Math.PI/3)*r*1.05).toFixed(1)]));
+  if(k==='star')return poly(Array.from({length:10},(_,i)=>{const a=-Math.PI/2+i*Math.PI/5,q=i%2?r*.5:r*1.12;return [+(Math.cos(a)*q).toFixed(1),+(Math.sin(a)*q).toFixed(1)]}));
+  return `<path transform="scale(${r/20})" d="M0 20 C-30 -2 -22 -26 -8 -22 C-3 -20 0 -15 0 -12 C0 -15 3 -20 8 -22 C22 -26 30 -2 0 20Z" ${st}/>`;
+}
+const mGloss=(r)=>`<ellipse cx="${-r*.3}" cy="${-r*.35}" rx="${r*.28}" ry="${r*.16}" fill="#fff" opacity=".45" transform="rotate(-30 ${-r*.3} ${-r*.35})" pointer-events="none"/>`;
+
+/* état commun d'une partie */
+let MS=null;
+function mStart(g,prompt,inner,total){
+  MS={g,miss:0,done:0,total,tok:Math.random()};
+  artShell(g,`<div class="qcard"><p class="q" id="mq">${prompt}</p></div><div class="mstage">${inner}</div><p class="fb" id="mfb" role="status"> </p>`,`<span class="chip" id="mprog">0/${total}</span>`);
+  try{speak(prompt.replace(/<[^>]+>/g,''))}catch(e){}
+}
+function mFb(t,good){const f=$('#mfb');if(f){f.textContent=t;f.className='fb '+(good?'good':'bad')}}
+function mBad(el){sndBad();MS.miss++;if(el){el.classList.remove('mshk');void el.getBoundingClientRect();el.classList.add('mshk')}}
+function mProg(){const p=$('#mprog');if(p)p.textContent=`${MS.done}/${MS.total}`}
+function mFinish(){
+  const g=MS.g,m=MS.miss,stars=m===0?3:m<=2?2:1;
+  setTimeout(()=>{if(CUR===g&&S.view==='play')showResult(stars,L3('Bravo, tu as bien réfléchi !','Well done, you thought it through!','Bravo, ou finn byen reflesi !'))},900);
+}
+function svgPt(svg,e){const p=svg.createSVGPoint();p.x=e.clientX;p.y=e.clientY;return p.matrixTransform(svg.getScreenCTM().inverse())}
+/* glisser-déposer sur un <svg> : éléments .drg avec data-x/data-y (position de départ) */
+function mDrag(svg,onDrop){
+  let cur=null,off=null;
+  svg.addEventListener('pointerdown',e=>{
+    const t=e.target.closest&&e.target.closest('.drg');if(!t||t.classList.contains('done'))return;
+    cur=t;const p=svgPt(svg,e);off={x:p.x-+t.dataset.cx,y:p.y-+t.dataset.cy};
+    t.parentNode.appendChild(t);t.classList.add('lift');t.style.transition='none';
+    try{svg.setPointerCapture(e.pointerId)}catch(x){}e.preventDefault();
+  });
+  svg.addEventListener('pointermove',e=>{
+    if(!cur)return;const p=svgPt(svg,e);
+    cur.dataset.cx=p.x-off.x;cur.dataset.cy=p.y-off.y;cur.style.transform=`translate(${cur.dataset.cx}px,${cur.dataset.cy}px)`;
+  });
+  const up=()=>{
+    if(!cur)return;const t=cur;cur=null;t.classList.remove('lift');
+    const ok=onDrop(t,+t.dataset.cx,+t.dataset.cy);
+    if(!ok){t.style.transition='transform .35s cubic-bezier(.2,1.4,.4,1)';t.dataset.cx=t.dataset.x;t.dataset.cy=t.dataset.y;t.style.transform=`translate(${t.dataset.x}px,${t.dataset.y}px)`}
+  };
+  svg.addEventListener('pointerup',up);svg.addEventListener('pointercancel',up);
+}
+const mPlace=(t,x,y)=>{t.dataset.cx=x;t.dataset.cy=y;t.style.transition='transform .3s ease-out';t.style.transform=`translate(${x}px,${y}px)`};
+const mItem=(cls,x,y,inner,ex)=>`<g class="${cls}" data-x="${x}" data-y="${y}" data-cx="${x}" data-cy="${y}" style="transform:translate(${x}px,${y}px)" ${ex||''}>${inner}</g>`;
+
+/* 1. Tour rose : du plus grand au plus petit */
+function montTower(g){
+  const n=S.band<=1||S.band===6?4:S.band===2?6:8;
+  const ws=Array.from({length:n},(_,i)=>150-i*(110/(n-1)));
+  const order=shuffle(ws.map((w,i)=>i));
+  const bh=Math.min(34,300/n);
+  let svg=`<svg class="msvg" viewBox="0 0 360 420" role="img" aria-label="Tour rose"><defs><linearGradient id="pk" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffb3d1"/><stop offset="1" stop-color="#f472b6"/></linearGradient></defs>
+  <rect x="190" y="388" width="150" height="14" rx="6" fill="#d9b38c" stroke="${mInk}" stroke-width="2"/>`;
+  order.forEach((idx,k)=>{
+    const w=ws[idx],x=95,y=40+k*(340/n);
+    svg+=`<g class="mblk" data-i="${idx}" style="transform:translate(${x}px,${y}px)"><rect x="${-w/2}" y="0" width="${w}" height="${bh}" rx="8" fill="url(#pk)" stroke="${mInk}" stroke-width="2.5"/><rect x="${-w/2+6}" y="4" width="${w-12}" height="${bh*.22}" rx="4" fill="#fff" opacity=".35"/></g>`;
+  });
+  mStart(g,L3('Construis la tour : commence par le plus grand !','Build the tower: start with the biggest!','Konstri latour : komans ar pli gran !'),svg+'</svg>',n);
+  let next=0;
+  $('.msvg').addEventListener('click',e=>{
+    const b=e.target.closest('.mblk');if(!b||b.classList.contains('done'))return;
+    if(+b.dataset.i===next){
+      b.classList.add('done');b.style.transition='transform .6s cubic-bezier(.3,1.3,.5,1)';
+      b.style.transform=`translate(265px,${388-(next+1)*bh}px)`;next++;MS.done++;mProg();sndOk();
+      mFb(L3('Oui, le suivant !','Yes, the next one!','Wi, sakenn aprel !'),true);
+      if(next===n){sndWin();confetti();mFinish()}
+    }else{mBad(b);mFb(L3('Cherche un plus grand','Look for a bigger one','Rod enn pli gran'),false)}
+  });
+}
+
+/* 2. Tri par couleur */
+function montSort(g){
+  const nc=S.band<=1||S.band===6?2:3,cols=sample(MCOL,nc),per=S.band<=1||S.band===6?2:S.band===2?3:3;
+  const items=shuffle(cols.flatMap((c,ci)=>Array.from({length:per},()=>({c:ci,k:pick(MSHP.slice(0,5))}))));
+  const bw=340/nc;
+  let svg=`<svg class="msvg" viewBox="0 0 360 420" role="img" aria-label="Tri">`;
+  cols.forEach((c,i)=>{const x=10+i*bw+bw/2;svg+=`<g transform="translate(${x} 330)"><path d="M${-bw/2+10} -10 L${-bw/2+22} 72 H${bw/2-22} L${bw/2-10} -10Z" fill="${c[0]}" opacity=".9" stroke="${mInk}" stroke-width="3" stroke-linejoin="round"/><rect x="${-bw/2+4}" y="-18" width="${bw-8}" height="14" rx="7" fill="${c[0]}" stroke="${mInk}" stroke-width="3"/></g>`});
+  items.forEach((it,i)=>{
+    const cols_=Math.min(items.length,4),x=45+(i%cols_)*(270/(cols_-1||1)),y=60+Math.floor(i/cols_)*78;
+    svg+=mItem('drg',x,y,mShp(it.k,26,cols[it.c][0])+mGloss(26),`data-c="${it.c}"`);
+  });
+  mStart(g,L3('Range chaque forme dans le panier de sa couleur','Put each shape in the basket of its color','Met sak form dan panye so kouler'),svg+'</svg>',items.length);
+  const svgEl=$('.msvg');
+  mDrag(svgEl,(t,x,y)=>{
+    const c=+t.dataset.c;let hit=-1;
+    cols.forEach((_,i)=>{const bx=10+i*bw+bw/2;if(Math.abs(x-bx)<bw/2&&y>270&&y<420)hit=i});
+    if(hit<0)return false;
+    if(hit===c){t.classList.add('done');mPlace(t,10+c*bw+bw/2,325+(MS.done%3)*-6);t.style.transform+=' scale(.8)';MS.done++;mProg();sndOk();mFb(tt(cols[c][1]),true);
+      if(MS.done===MS.total){sndWin();confetti();mFinish()}
+      return true}
+    mBad(t);mFb(L3('Essaie un autre panier','Try another basket','Esey enn lot panye'),false);return false;
+  });
+}
+
+/* 3. Encastrements */
+function montShape(g){
+  const n=S.band<=1||S.band===6?3:S.band===2?4:5,ks=sample(MSHP,n),cols=sample(MCOL,n);
+  const sx=i=>50+i*(260/(n-1||1)),sy=130;
+  let svg=`<svg class="msvg" viewBox="0 0 360 420" role="img" aria-label="Encastrements"><rect x="12" y="50" width="336" height="160" rx="26" fill="#d9a066" stroke="${mInk}" stroke-width="3"/><rect x="20" y="58" width="320" height="144" rx="20" fill="#e8b97e"/>`;
+  ks.forEach((k,i)=>{svg+=`<g transform="translate(${sx(i)} ${sy})" data-slot="${i}">${mShp(k,30,'#7a4a1f55','stroke-dasharray="5 5" opacity=".9"')}</g>`});
+  const ord=shuffle(ks.map((_,i)=>i));
+  ord.forEach((i,j)=>{const x=50+j*(260/(n-1||1)),y=330;svg+=mItem('drg',x,y,mShp(ks[i],30,cols[i][0])+mGloss(30),`data-s="${i}"`)});
+  mStart(g,L3('Glisse chaque forme dans son trou','Slide each shape into its hole','Glis sak form dan so tou'),svg+'</svg>',n);
+  mDrag($('.msvg'),(t,x,y)=>{
+    const i=+t.dataset.s;
+    if(Math.hypot(x-sx(i),y-sy)<42){t.classList.add('done');mPlace(t,sx(i),sy);MS.done++;mProg();sndOk();if(MS.done===n){sndWin();confetti();mFinish()}return true}
+    if(y<215&&y>50){mBad(t);mFb(L3('Ce n’est pas la bonne forme','Not the right shape','Pa bon form'),false)}
+    return false;
+  });
+}
+
+/* 4. Perles : compter jusqu'à N */
+function montBeads(g){
+  const mx=S.band<=1||S.band===6?5:S.band===2?8:10,rounds=5;
+  let r=0,N=0,cnt=0;
+  const draw=()=>{
+    N=rnd(1,mx);cnt=0;
+    let svg=`<svg class="msvg" viewBox="0 0 360 420" role="img" aria-label="Perles"><text x="180" y="125" text-anchor="middle" font-size="120" font-family="Baloo 2,Nunito,sans-serif" font-weight="800" fill="#e11d48" stroke="${mInk}" stroke-width="3" paint-order="stroke">${N}</text><rect x="20" y="170" width="320" height="170" rx="28" fill="#fff" stroke="${mInk}" stroke-width="3"/>`;
+    for(let i=0;i<10;i++){const x=64+(i%5)*58,y=225+Math.floor(i/5)*80;svg+=`<g class="mcell" data-i="${i}" style="transform:translate(${x}px,${y}px)"><circle r="24" fill="#f3efff" stroke="#b9aee6" stroke-width="2.5"/><circle class="mbead" r="22" fill="url(#gd)" stroke="${mInk}" stroke-width="2.5" opacity="0"/></g>`}
+    svg+=`<defs><radialGradient id="gd" cx=".35" cy=".3" r=".8"><stop offset="0" stop-color="#fff3a0"/><stop offset=".6" stop-color="#fbbf24"/><stop offset="1" stop-color="#d97706"/></radialGradient></defs></svg>`;
+    return svg;
+  };
+  mStart(g,L3('Touche les perles : autant que le chiffre !','Tap the beads: as many as the number!','Touse bann perl : otan ki sifer la !'),draw(),rounds);
+  const bind=()=>{
+    $('.msvg').addEventListener('click',e=>{
+      const c=e.target.closest('.mcell');if(!c)return;
+      const b=c.querySelector('.mbead');
+      if(b.getAttribute('opacity')==='1'){b.setAttribute('opacity','0');cnt--;return}
+      if(cnt>=N){mBad(c);mFb(L3('C’est déjà assez !','That’s enough!','Ase deza !'),false);return}
+      b.setAttribute('opacity','1');cnt++;tone(440+cnt*60,.1,'sine',0,.08);try{speak(String(cnt))}catch(x){}
+      if(cnt===N){
+        MS.done=++r;mProg();sndOk();mFb(L3(`${N} ! Bravo`,`${N}! Well done`,`${N} ! Bravo`),true);
+        if(r>=rounds){sndWin();confetti();mFinish()}
+        else setTimeout(()=>{if(CUR!==g||S.view!=='play')return;$('.mstage').innerHTML=draw();bind();try{speak(String(N))}catch(x){}},1000);
+      }
+    });
+  };
+  bind();
+}
+
+/* 5. Lettres rugueuses : trace avec le doigt */
+function montTrace(g){
+  const pool=S.band<=1||S.band===6?'AEIOULMOPST'.split(''):S.band===2?'ABCDEFGHIJKLMNOPRSTUV'.split('').concat('abdemoprst'.split('')):'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyz'.split('');
+  const letters=sample(pool,4);let r=0;
+  mStart(g,L3('Suis la lettre avec ton doigt','Trace the letter with your finger','Swiv lalet ar to dwa'),`<canvas id="mtc" class="mcan"></canvas>`,letters.length);
+  const run=()=>{
+    const ch=letters[r],cv=$('#mtc');if(!cv)return;
+    const S0=320,dpr=Math.min(3,window.devicePixelRatio||1),W=Math.round(S0*dpr);
+    cv.width=cv.height=W;cv.style.width=cv.style.height=S0+'px';
+    const c=cv.getContext('2d');c.setTransform(dpr,0,0,dpr,0,0);
+    const mk=document.createElement('canvas');mk.width=mk.height=W;const mc=mk.getContext('2d');mc.setTransform(dpr,0,0,dpr,0,0);
+    const font=`800 270px "Baloo 2",Nunito,Arial Rounded MT Bold,sans-serif`;
+    mc.font=font;mc.textAlign='center';mc.textBaseline='alphabetic';mc.fillStyle='#000';
+    const m=mc.measureText(ch),asc=m.actualBoundingBoxAscent||190,des=m.actualBoundingBoxDescent||0;
+    const by=S0/2+(asc-des)/2;mc.fillText(ch,S0/2,by);
+    const id=mc.getImageData(0,0,W,W).data;
+    const pts=[];for(let y=0;y<S0;y+=7)for(let x=0;x<S0;x+=7){if(id[((Math.round(y*dpr))*W+Math.round(x*dpr))*4+3]>128)pts.push([x,y,0])}
+    const sand=document.createElement('canvas');sand.width=sand.height=W;const sc=sand.getContext('2d');sc.setTransform(dpr,0,0,dpr,0,0);
+    sc.fillStyle='#e9a8c4';sc.fillRect(0,0,S0,S0);for(let i=0;i<5200;i++){sc.fillStyle=Math.random()<.5?'#f7d3e3':'#c97a9f';sc.fillRect(Math.random()*S0,Math.random()*S0,1.3,1.3)}
+    sc.globalCompositeOperation='destination-in';sc.setTransform(1,0,0,1,0,0);sc.drawImage(mk,0,0);
+    const sk=[];let down=false,last=null;
+    const tmp=document.createElement('canvas');tmp.width=tmp.height=W;const tc=tmp.getContext('2d');
+    const paint=()=>{
+      c.setTransform(dpr,0,0,dpr,0,0);c.clearRect(0,0,S0,S0);c.fillStyle='#fff8ec';c.fillRect(0,0,S0,S0);
+      c.save();c.setTransform(1,0,0,1,0,0);c.globalAlpha=1;c.drawImage(sand,0,0);c.restore();
+      tc.setTransform(1,0,0,1,0,0);tc.clearRect(0,0,W,W);tc.setTransform(dpr,0,0,dpr,0,0);
+      tc.strokeStyle='#22c55e';tc.lineWidth=22;tc.lineCap=tc.lineJoin='round';
+      sk.forEach(s=>{tc.beginPath();s.forEach((p,i)=>i?tc.lineTo(p[0],p[1]):tc.moveTo(p[0],p[1]));if(s.length===1)tc.lineTo(s[0][0]+.1,s[0][1]);tc.stroke()});
+      tc.setTransform(1,0,0,1,0,0);tc.globalCompositeOperation='destination-in';tc.drawImage(mk,0,0);tc.globalCompositeOperation='source-over';
+      c.save();c.setTransform(1,0,0,1,0,0);c.drawImage(tmp,0,0);c.restore();
+      c.setTransform(dpr,0,0,dpr,0,0);c.font=font;c.textAlign='center';c.lineWidth=3;c.setLineDash([8,8]);c.strokeStyle='#9d174d';c.strokeText(ch,S0/2,by);c.setLineDash([]);
+    };
+    paint();
+    const pos=e=>{const b=cv.getBoundingClientRect();return [(e.clientX-b.left)*S0/b.width,(e.clientY-b.top)*S0/b.height]};
+    const cover=p=>{pts.forEach(q=>{if(!q[2]&&Math.hypot(q[0]-p[0],q[1]-p[1])<16)q[2]=1})};
+    const pct=()=>pts.filter(q=>q[2]).length/pts.length;
+    cv.onpointerdown=e=>{down=true;const p=pos(e);sk.push([p]);cover(p);try{cv.setPointerCapture(e.pointerId)}catch(x){}paint();e.preventDefault()};
+    cv.onpointermove=e=>{if(!down)return;const p=pos(e);sk[sk.length-1].push(p);cover(p);paint();
+      if(pct()>=.78){down=false;MS.done=++r;mProg();sndOk();confetti();try{speak(ch)}catch(x){}
+        mFb(L3(`Bravo ! C’est la lettre « ${ch} »`,`Great! It is the letter “${ch}”`,`Bravo ! Sa lalet « ${ch} »`),true);
+        if(r>=letters.length){sndWin();mFinish()}else setTimeout(()=>{if(CUR===g&&S.view==='play')run()},1100)}};
+    cv.onpointerup=cv.onpointercancel=()=>{down=false};
+  };
+  (document.fonts&&document.fonts.ready?document.fonts.ready:Promise.resolve()).then(()=>{if(CUR===g&&S.view==='play')run()});
+}
+
+/* 6. Suites logiques */
+function montPattern(g){
+  const rounds=5;let r=0;
+  const mk=()=>{
+    const kind=S.band<=1||S.band===6?'AB':S.band===2?pick(['AB','AAB','ABB']):pick(['AAB','ABB','ABC']);
+    const pal=sample(MCOL,3),shp=sample(MSHP,3),sym=[0,1,2].map(i=>({c:pal[i][0],k:shp[i]}));
+    const map={A:sym[0],B:sym[1],C:sym[2]};
+    let seq=[];while(seq.length<7)seq=seq.concat(kind.split(''));seq=seq.slice(0,7);
+    const ans=seq[6],show=seq.slice(0,6);
+    const opts=shuffle(['A','B','C'].filter(x=>kind.includes(x)||x==='C'));
+    if(!opts.includes(ans))opts[0]=ans;
+    return {map,show,ans,opts:shuffle([...new Set([ans,...opts])]).slice(0,3)};
+  };
+  let P=mk();
+  const draw=()=>{
+    let svg=`<svg class="msvg" viewBox="0 0 360 420" role="img" aria-label="Suite">`;
+    P.show.forEach((s,i)=>{const m=P.map[s],x=30+i*50,y=110;svg+=`<g transform="translate(${x} ${y})">${mShp(m.k,20,m.c)}${mGloss(20)}</g>`});
+    svg+=`<g transform="translate(34 ${200})"><text x="0" y="0" font-size="1"> </text></g><rect x="4" y="76" width="352" height="68" rx="34" fill="none" stroke="#b9aee6" stroke-width="3" stroke-dasharray="2 8" stroke-linecap="round"/>`;
+    svg+=`<g transform="translate(322 110)"><circle r="24" fill="#fff" stroke="${mInk}" stroke-width="3" stroke-dasharray="6 5"/><text y="12" text-anchor="middle" font-size="34" font-weight="800" fill="#7c5cf6">?</text></g>`;
+    P.opts.forEach((o,i)=>{const m=P.map[o],x=70+i*110;svg+=`<g class="mopt" data-o="${o}" style="transform:translate(${x}px,300px)"><circle r="46" fill="#fff" stroke="#e2dcfa" stroke-width="3"/>${mShp(m.k,28,m.c)}${mGloss(28)}</g>`});
+    return svg+'</svg>';
+  };
+  mStart(g,L3('Quelle forme vient ensuite ?','Which shape comes next?','Ki form ki vini apre ?'),draw(),rounds);
+  const bind=()=>{
+    $('.msvg').addEventListener('click',e=>{
+      const o=e.target.closest('.mopt');if(!o)return;
+      if(o.dataset.o===P.ans){
+        MS.done=++r;mProg();sndOk();mFb(L3('Oui, c’est ça !','Yes, that’s it!','Wi, sa mem !'),true);
+        if(r>=rounds){sndWin();confetti();mFinish()}
+        else setTimeout(()=>{if(CUR!==g||S.view!=='play')return;P=mk();$('.mstage').innerHTML=draw();bind()},900);
+      }else{mBad(o);mFb(L3('Regarde bien le motif','Look at the pattern again','Get pattern la ankor'),false)}
+    });
+  };
+  bind();
+}
+const MONTG={tower:montTower,sort:montSort,shape:montShape,beads:montBeads,trace:montTrace,pattern:montPattern};
+function startMont(g){MONTG[g.mont](g)}
+
+GAMES.push(
+  {id:'m-tow',type:'mont',mont:'tower',bands:[6,0,1,2,3],icon:'🩷',name:['Tour rose','Pink tower','Tour roz'],desc:['Du plus grand au plus petit','From biggest to smallest','Pli gran ziska pli ti']},
+  {id:'m-srt',type:'mont',mont:'sort',bands:[6,0,1,2,3],icon:'🧺',name:['Tri des couleurs','Color sorting','Triye kouler'],desc:['Chaque forme dans son panier','Each shape in its basket','Sak form dan so panye']},
+  {id:'m-shp',type:'mont',mont:'shape',bands:[6,0,1,2,3],icon:'🔷',name:['Encastrements','Shape puzzle','Ankastreman'],desc:['Glisse la forme dans son trou','Slide the shape into its hole','Glis form dan so tou']},
+  {id:'m-bea',type:'mont',mont:'beads',bands:[0,1,2,3],icon:'🟡',name:['Perles dorées','Golden beads','Perl dore'],desc:['Compte avec les perles','Count with beads','Konte ar bann perl']},
+  {id:'m-trc',type:'mont',mont:'trace',bands:[0,1,2,3],icon:'✍️',name:['Lettres rugueuses','Sandpaper letters','Lalet gratan'],desc:['Trace la lettre avec le doigt','Trace the letter with your finger','Trase lalet ar to dwa']},
+  {id:'m-pat',type:'mont',mont:'pattern',bands:[0,1,2,3],icon:'🔁',name:['Suites logiques','Pattern train','Seri lozik'],desc:['Quelle forme vient ensuite ?','What comes next?','Ki ki vini apre ?']}
+);
 /* ---------- Textes de l'interface : [fr, en, créole] ---------- */
 const UI={
   learn:['Apprendre','Learn','Aprann'],
@@ -4941,6 +5196,7 @@ Object.assign(UI,{
   cArcade:['Arcade','Arcade','Arcade'],
   cCreate:['Créer','Create','Kree'],
   cFamily:['En famille','Family time','An fami'],
+  cMont:['Montessori','Montessori','Montessori'],
   collection:['Ma collection','My collection','Mo kolekesyon']
 });
 const U=(k,...a)=>{let v=UI[k];if(typeof v==='function')v=v(...a);return v[LI()]};
@@ -5083,7 +5339,8 @@ const CATS=[
   {k:'learn',ic:'📚',c:'#2F9BFF',n:'cLearn'},
   {k:'arcade',ic:'🕹️',c:'#8B5CF6',n:'cArcade'},
   {k:'create',ic:'🎨',c:'#FF4D8D',n:'cCreate'},
-  {k:'family',ic:'👨‍👩‍👧‍👦',c:'#16B364',n:'cFamily'}
+  {k:'family',ic:'👨‍👩‍👧‍👦',c:'#16B364',n:'cFamily'},
+  {k:'mont',ic:'🧩',c:'#0D9488',n:'cMont'}
 ];
 const gamesForBand=()=>GAMES.filter(g=>g.band===S.band||(g.bands&&g.bands.includes(S.band)));
 function hubMusic(){if(SOUND&&MUS_ON&&(!MUS.timer||MUS.pat!==MUSIC.hub))musStart(MUSIC.hub)}
