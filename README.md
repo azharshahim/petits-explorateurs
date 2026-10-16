@@ -6,7 +6,8 @@ L'enfant choisit son âge, son pseudo et son personnage, puis l'appli propose le
 ## Contenu
 
 - **Jeux éducatifs** : couleurs, animaux, comptage, formes, additions, tables de multiplication, orthographe, lire l'heure, fractions, conjugaison, équations, sciences, histoire-géo, langues, jeux de mémoire.
-- **Arcade** : esquive au doigt (Attrape-friandises), plateforme (Saute-aventure), course de kart en 3D (Grand prix), blocs (Blocs), tir (Mission étoiles). On ramasse des friandises pour passer au niveau suivant.
+- **Arcade** : esquive au doigt (Attrape-friandises), plateforme (Saute-aventure : le héros court tout seul, on touche pour sauter), course de kart en 3D (Grand prix : on glisse le doigt pour diriger), blocs (Blocs : glisser, toucher), tir (Mission étoiles : on glisse pour déplacer, il tire tout seul). Plus aucun petit bouton : tout se joue au doigt. On ramasse des friandises pour passer au niveau suivant.
+- **Images** : toutes les illustrations (animaux, friandises, véhicules, trophées…) sont dessinées en SVG directement dans le code, sans fichier externe.
 - **Créer** : gratte et découvre, coloriage, peinture à la main, bulles magiques (dès 0 an), touche et écoute les animaux.
 - **En famille** : morpion, 4 en ligne, serpents et échelles, petits chevaux (2 à 4 joueurs, contre l'ordinateur ou entre humains).
 - **Trophées** : une collection de trophées à débloquer.
