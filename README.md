@@ -1,13 +1,18 @@
 # Petits Explorateurs
 
-Application éducative pour enfants de 2 à 14 ans, en **français**, **anglais** et **créole mauricien**.
-On choisit l'âge de l'enfant et l'appli propose les jeux adaptés à son niveau.
+Application de jeux pour toute la famille, de **0 à 99 ans**, en **français**, **anglais** et **créole mauricien**.
+L'enfant choisit son âge, son pseudo et son personnage, puis l'appli propose les jeux adaptés.
 
 ## Contenu
 
 - **Jeux éducatifs** : couleurs, animaux, comptage, formes, additions, tables de multiplication, orthographe, lire l'heure, fractions, conjugaison, équations, sciences, histoire-géo, langues, jeux de mémoire.
 - **Arcade** : esquive au doigt (Attrape-friandises), plateforme (Saute-aventure), course de kart en 3D (Grand prix), blocs (Blocs), tir (Mission étoiles). On ramasse des friandises pour passer au niveau suivant.
-- Mode jour / nuit, son et musique, étoiles gagnées enregistrées sur l'appareil.
+- **Créer** : gratte et découvre, coloriage, peinture à la main, bulles magiques (dès 0 an), touche et écoute les animaux.
+- **En famille** : morpion, 4 en ligne, serpents et échelles, petits chevaux (2 à 4 joueurs, contre l'ordinateur ou entre humains).
+- **Trophées** : une collection de trophées à débloquer.
+- **Contrôle parental** : temps d'écran par jour, heure du coucher, code parent (menu engrenage > Espace parents).
+- Réglages (engrenage) : jour / nuit, volume, musique, effets, voix, langues.
+- Tout est enregistré sur l'appareil, rien n'est envoyé en ligne.
 
 ## Utilisation
 
