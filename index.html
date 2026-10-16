@@ -833,7 +833,7 @@ body.hasnav .vscene{width:min(100%,calc((100dvh - 330px)*360/440),520px)}
 body:has(#cv) #bnav,body:has(.mstage) #bnav,body:has(.pads) #bnav,body:has(.sheet:not([hidden])) #bnav{display:none!important}body:has(#cv).hasnav .wrap,body:has(.mstage).hasnav .wrap{padding-bottom:0}
 
 /* Montessori */
-.mstage{display:flex;justify-content:center;margin-top:10px}
+.mstage{display:flex;flex-direction:column;align-items:center;margin-top:10px}
 .msvg{width:min(100%,calc((100dvh - 330px)*360/420),460px);height:auto;touch-action:none;user-select:none;-webkit-user-select:none;border-radius:28px;background:linear-gradient(#fff,#f6f1ff);border:3px solid var(--line);box-shadow:var(--shadow)}
 .msvg .drg,.msvg .mblk,.msvg .mopt,.msvg .mcell{cursor:grab;transform-box:fill-box}
 .msvg .drg.lift{filter:drop-shadow(0 8px 6px rgba(0,0,0,.3))}
@@ -844,6 +844,22 @@ body:has(#cv) #bnav,body:has(.mstage) #bnav,body:has(.pads) #bnav,body:has(.shee
 .mcan{display:block;margin:10px auto 0;max-width:100%;border-radius:28px;border:3px solid var(--line);box-shadow:var(--shadow);touch-action:none;background:#fff8ec}
 .hubgrid>.hcard:last-child:nth-child(odd){grid-column:1/-1}
 
+
+.msvg .mshd{filter:brightness(0) opacity(.28)}
+.msvg .drg.ok rect:last-child{stroke:#22c55e}
+.msvg .mcd{cursor:pointer}
+.mbtn{display:flex;gap:10px;justify-content:center;margin-top:10px}
+.hm{width:min(100%,460px);display:flex;flex-direction:column;gap:8px}
+.hmsvg{width:100%;height:auto;max-height:26dvh}
+.hmb{animation:hmbob 2.4s ease-in-out infinite alternate}@keyframes hmbob{to{transform:translateY(-5px)}}
+.hmp{opacity:0;transform:scale(0);transition:.3s}
+.hmw{display:flex;gap:6px;justify-content:center;flex-wrap:wrap}
+.hmw span{width:34px;height:42px;border-radius:12px;background:#fff;border:3px solid var(--line);display:grid;place-items:center;font-family:var(--f-display);font-size:24px;color:#7c3aed;border-bottom-width:5px}
+.hmw span.on{animation:pulse .4s}
+.hmkeys{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
+.hmk{min-height:42px;border-radius:12px;background:#fff;border:3px solid var(--line);font-family:var(--f-display);font-size:19px;color:var(--ink);box-shadow:0 3px 0 var(--line)}
+.hmk:active{transform:translateY(2px)}
+.hmk.ok{background:#bbf7d0;border-color:#22c55e}.hmk.ko{background:#fecaca;border-color:#ef4444;opacity:.6}
 </style>
 
 </head>
@@ -4241,7 +4257,7 @@ let UNL=store.get('trophies',{})||{};
 let VIL=Object.assign({v:0,st:[0,0,0,0,0],blocks:0,total:0,built:0,done:0,gift:0,streak:0},store.get('village',{})||{});
 if(!Array.isArray(VIL.st)||VIL.st.length!==5)VIL.st=[0,0,0,0,0];
 const saveVil=()=>store.set('village',VIL);
-function catOf(g){return g.type==='mont'?'mont':g.arc?'arcade':g.type==='art'?(g.cat||'create'):g.type==='fam'?'family':'learn'}
+function catOf(g){return g.type==='mont'?(g.cat||'mont'):g.arc?'arcade':g.type==='art'?(g.cat||'create'):g.type==='fam'?'family':'learn'}
 function markDay(){
   const k=dayKey();
   if(!STATS.days.includes(k)){STATS.days.push(k);STATS.days=STATS.days.slice(-60)}
@@ -5132,6 +5148,314 @@ GAMES.push(
   {id:'m-bea',type:'mont',mont:'beads',bands:[0,1,2,3],icon:'🟡',name:['Perles dorées','Golden beads','Perl dore'],desc:['Compte avec les perles','Count with beads','Konte ar bann perl']},
   {id:'m-trc',type:'mont',mont:'trace',bands:[0,1,2,3],icon:'✍️',name:['Lettres rugueuses','Sandpaper letters','Lalet gratan'],desc:['Trace la lettre avec le doigt','Trace the letter with your finger','Trase lalet ar to dwa']},
   {id:'m-pat',type:'mont',mont:'pattern',bands:[0,1,2,3],icon:'🔁',name:['Suites logiques','Pattern train','Seri lozik'],desc:['Quelle forme vient ensuite ?','What comes next?','Ki ki vini apre ?']}
+);
+/* ====================== Snake + jeux Montessori modernes + mot mystère ====================== */
+
+/* ---------- Snake (arcade) ---------- */
+ARCADE.snake=R=>{
+  const W=360,H=470,C=16,N=19,S=22,BX=4,BY=40;
+  let sn,dir,nd,apple,acc,gs,t,fx;
+  const FR=['🍎','🍓','🍒','🍇','🍊'];
+  const place=()=>{let x,y,k=0;do{x=rnd(0,C-1);y=rnd(0,N-1)}while(sn.some(s=>s.x===x&&s.y===y)&&++k<200);apple={x,y,e:pick(FR)}};
+  const fresh=()=>{sn=[{x:8,y:10},{x:7,y:10},{x:6,y:10}];dir=[1,0];nd=[1,0];acc=0};
+  const setDir=d=>{if(d[0]===-dir[0]&&d[1]===-dir[1])return;nd=d};
+  const step=()=>{
+    dir=nd;const h={x:sn[0].x+dir[0],y:sn[0].y+dir[1]};
+    const eat=apple&&h.x===apple.x&&h.y===apple.y;
+    const body=eat?sn:sn.slice(0,-1);
+    if(h.x<0||h.y<0||h.x>=C||h.y>=N||body.some(s=>s.x===h.x&&s.y===h.y)){R.hit();if(R.state==='play'){fresh()}return}
+    sn.unshift(h);
+    if(eat){fx.push({x:BX+h.x*S+S/2,y:BY+h.y*S,t:0});R.collect(1);if(R.state!=='play')return;place()}else sn.pop();
+  };
+  return {W,H,gest:'drag',themed:true,
+    hint:['Glisse pour guider le serpent, mange les fruits sans toucher les bords !','Swipe to steer the snake, eat fruit without hitting the edges!','Glis pou gid serpan, manze fri san tous bor !'],
+    pad:{L:[['l','◀'],['u','▲']],R:[['d','▼'],['r','▶']]},
+    goalFor:L=>Math.min(25,4+L*2),
+    reset(){fresh();gs=null;t=0;fx=[];place()},
+    ptr(n,x,y){
+      if(n==='down'){gs={x,y};return}
+      if(!gs)return;
+      if(n==='move'){const dx=x-gs.x,dy=y-gs.y;if(Math.max(Math.abs(dx),Math.abs(dy))>14){setDir(Math.abs(dx)>Math.abs(dy)?[Math.sign(dx),0]:[0,Math.sign(dy)]);gs={x,y}}}
+      else gs=null;
+    },
+    update(dt){
+      t+=dt;
+      if(R.pressed('l'))setDir([-1,0]);if(R.pressed('r'))setDir([1,0]);if(R.pressed('u'))setDir([0,-1]);if(R.pressed('d'))setDir([0,1]);
+      acc+=dt;const si=Math.max(.08,.22-R.level*.012-R.diff*.02);
+      while(acc>=si&&R.state==='play'){acc-=si;step()}
+      fx.forEach(f=>f.t+=dt);fx=fx.filter(f=>f.t<.7);
+    },
+    draw(c){
+      c.globalAlpha=1;c.fillStyle='#14532d';c.fillRect(0,0,W,H);
+      for(let y=0;y<N;y++)for(let x=0;x<C;x++){c.fillStyle=(x+y)%2?'#86efac':'#6ee7a0';c.fillRect(BX+x*S,BY+y*S,S,S)}
+      c.strokeStyle='#052e16';c.lineWidth=3;c.strokeRect(BX-1.5,BY-1.5,C*S+3,N*S+3);
+      c.fillStyle='#ffffff';c.font='800 22px "Baloo 2",Nunito,sans-serif';c.textAlign='left';c.textBaseline='middle';
+      em(c,'🍎',24,20,24);c.fillStyle='#ffffff';c.fillText(R.got+' / '+R.goal,44,21);
+      if(apple){const bob=Math.sin(t*6)*1.5;c.fillStyle='rgba(0,0,0,.18)';c.beginPath();c.ellipse(BX+apple.x*S+S/2,BY+apple.y*S+S-3,S*.35,3.5,0,0,7);c.fill();em(c,apple.e,BX+apple.x*S+S/2,BY+apple.y*S+S/2+bob,S*.95)}
+      for(let i=sn.length-1;i>=0;i--){
+        const s=sn[i],x=BX+s.x*S+S/2,y=BY+s.y*S+S/2,k=i/Math.max(1,sn.length-1);
+        if(i<sn.length-1){const p=sn[i+1];c.strokeStyle=`hsl(${150-k*-20},70%,${34+k*10}%)`;c.lineWidth=S*.78;c.lineCap='round';c.beginPath();c.moveTo(x,y);c.lineTo(BX+p.x*S+S/2,BY+p.y*S+S/2);c.stroke()}
+        c.fillStyle=`hsl(${160-k*10},72%,${i%2?40:36}%)`;c.beginPath();c.arc(x,y,S*(i===0?.5:.43),0,7);c.fill();
+        if(i>0&&i%2){c.fillStyle='rgba(255,255,255,.25)';c.beginPath();c.arc(x-1,y-2,S*.2,0,7);c.fill()}
+        if(i===0){
+          const ex=dir[0]*3,ey=dir[1]*3,px=-dir[1]*5,py=dir[0]*5;
+          [[1],[-1]].forEach(([q])=>{c.fillStyle='#fff';c.beginPath();c.arc(x+ex+px*q,y+ey+py*q,4.2,0,7);c.fill();c.fillStyle='#111';c.beginPath();c.arc(x+ex*1.6+px*q,y+ey*1.6+py*q,2,0,7);c.fill()});
+          c.strokeStyle='#ef4444';c.lineWidth=2;c.beginPath();c.moveTo(x+dir[0]*S*.45,y+dir[1]*S*.45);c.lineTo(x+dir[0]*S*.8,y+dir[1]*S*.8);c.stroke();
+        }
+      }
+      fx.forEach(f=>{c.globalAlpha=1-f.t/.7;c.fillStyle='#fff';c.font='800 18px Baloo 2,Nunito,sans-serif';c.textAlign='center';c.fillText('+1',f.x,f.y-f.t*30);c.globalAlpha=1});
+    }
+  };
+};
+GAMES.push({id:'a-snk',arc:'snake',bands:[1,2,3,4,5,7,8],icon:'🐍',name:['Snake','Snake','Snake'],desc:['Mange les fruits, grandis sans te mordre','Eat fruit and grow, don’t bite yourself','Manze fri, grandi san mord twa']});
+
+/* ---------- mots (pendu, premier son) ---------- */
+const MWORDS=[['🐘','éléphant','elephant','elefan'],['🍌','banane','banana','banann'],['🐱','chat','cat','sat'],['🏠','maison','house','lakaz'],['🌞','soleil','sun','soleil'],['🚗','voiture','car','loto'],['🍎','pomme','apple','pom'],['🐟','poisson','fish','pwason'],['🌸','fleur','flower','fler'],['🐶','chien','dog','lisien'],['🍓','fraise','strawberry','frez'],['🚀','fusée','rocket','fize'],['🦁','lion','lion','lion'],['🐢','tortue','turtle','torti'],['🌙','lune','moon','lalinn'],['🎈','ballon','balloon','balon'],['🍰','gâteau','cake','gato'],['🐝','abeille','bee','lezabey'],['⭐','étoile','star','zetwal'],['🥕','carotte','carrot','karot'],['🐸','grenouille','frog','krapo'],['🐴','cheval','horse','seval'],['🍞','pain','bread','dipin'],['🌳','arbre','tree','pie dibwa'],['🦋','papillon','butterfly','papiyon']];
+const wLi=()=>({fr:1,en:2,mfe:3})[LANG]||1;
+const wShow=w=>w[wLi()];
+const wNorm=s=>s.normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^a-zA-Z]/g,'').toUpperCase();
+
+/* ---------- Mot mystère (pendu en ballons) ---------- */
+function montHang(g){
+  const young=S.band<=2,pool=MWORDS.filter(w=>wNorm(wShow(w)).length<=(young?5:12)),words=sample(pool.length>=3?pool:MWORDS,3);
+  const ALPHA='ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split(''),BC=['#ef4444','#3b82f6','#22c55e','#facc15','#a855f7','#fb923c'];
+  let r=0,wrongAll=0,w,target,found,lives;
+  const balloons=()=>{
+    let s=`<svg class="hmsvg" viewBox="0 0 360 190" role="img" aria-label="ballons">`;
+    for(let i=0;i<6;i++){
+      const x=45+i*54,y=46+Math.sin(i*1.3)*8,alive=i<lives;
+      s+=`<g class="${alive?'hmb':'hmp'}" style="transform-origin:${x}px ${y}px"><line x1="${x}" y1="${y+28}" x2="180" y2="128" stroke="#6b7280" stroke-width="1.6"/><ellipse cx="${x}" cy="${y}" rx="22" ry="27" fill="${BC[i]}" stroke="${mInk}" stroke-width="2.5"/><ellipse cx="${x-7}" cy="${y-9}" rx="5" ry="8" fill="#fff" opacity=".45"/><path d="M${x-4} ${y+27} l4 6 l4 -6z" fill="${BC[i]}" stroke="${mInk}" stroke-width="2"/></g>`;
+    }
+    return s+`<text x="180" y="170" text-anchor="middle" font-size="64">${w[0]}</text></svg>`;
+  };
+  const wordHtml=()=>`<div class="hmw">${target.split('').map((ch,i)=>`<span class="${found.has(ch)?'on':''}">${found.has(ch)?ch:''}</span>`).join('')}</div>`;
+  const render=()=>{
+    $('#hmtop').innerHTML=balloons()+wordHtml();
+    $('#hmkeys').innerHTML=ALPHA.map(k=>`<button class="hmk${found.has(k)?' ok':''}${used.has(k)&&!found.has(k)?' ko':''}" data-k="${k}"${used.has(k)?' disabled':''}>${k}</button>`).join('');
+  };
+  let used;
+  const next=()=>{
+    w=words[r];target=wNorm(wShow(w));found=new Set();used=new Set();lives=6;
+    render();try{speak(L3('Devine le mot','Guess the word','Devine mo la'))}catch(e){}
+  };
+  mStart(g,L3('Devine le mot : touche les lettres !','Guess the word: tap the letters!','Devine mo la : touse bann lalet !'),`<div class="hm"><div id="hmtop"></div><div id="hmkeys" class="hmkeys"></div></div>`,words.length);
+  next();
+  $('.hm').addEventListener('click',e=>{
+    const b=e.target.closest('.hmk');if(!b||b.disabled)return;
+    const k=b.dataset.k;used.add(k);
+    if(target.includes(k)){
+      found.add(k);sndOk();tone(520+target.indexOf(k)*40,.08,'sine',0,.07);
+      if([...target].every(ch=>found.has(ch))){
+        render();MS.done=++r;mProg();confetti();try{speak(wShow(w))}catch(x){}mFb(wShow(w)+' ✓',true);
+        if(r>=words.length){sndWin();MS.miss=Math.max(0,wrongAll-2);mFinish()}
+        else setTimeout(()=>{if(CUR===g&&S.view==='play')next()},1500);
+        return;
+      }
+    }else{
+      lives--;wrongAll++;sndBad();
+      if(lives<=0){
+        found=new Set(target.split(''));render();mFb(L3('C’était : ','It was: ','Ti : ')+wShow(w),false);MS.done=++r;mProg();
+        if(r>=words.length){MS.miss=Math.max(0,wrongAll-2);mFinish()}
+        else setTimeout(()=>{if(CUR===g&&S.view==='play')next()},2200);
+        return;
+      }
+    }
+    render();
+  });
+}
+
+/* ---------- Ombres : glisse chaque objet sur son ombre ---------- */
+function montShadow(g){
+  const SC=[
+    {who:'🧑‍🚒',bg:['#7dd3fc','#bef264'],it:['🧯','🪓','🚒','🔔']},
+    {who:'🧑‍🍳',bg:['#fde68a','#fdba74'],it:['🍳','🥄','🍰','🥕']},
+    {who:'🧑‍⚕️',bg:['#bae6fd','#a7f3d0'],it:['💉','🩺','💊','🩹']},
+    {who:'🧑‍🚀',bg:['#312e81','#6d28d9'],it:['🚀','🛰️','🌙','⭐']},
+    {who:'🧑‍🌾',bg:['#bef264','#86efac'],it:['🌻','🥕','🚜','🐔']},
+    {who:'🧑‍🎨',bg:['#fbcfe8','#c4b5fd'],it:['🎨','🖌️','🖼️','✏️']}
+  ];
+  const sc=pick(SC),n=S.band<=1||S.band===6?2:S.band===2?3:4,items=sample(sc.it,n);
+  const xs=i=>(360/n)*(i+.5);
+  const ord=shuffle(items.map((_,i)=>i));
+  let svg=`<svg class="msvg" viewBox="0 0 360 440" role="img" aria-label="Ombres"><defs><linearGradient id="shb" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${sc.bg[0]}"/><stop offset="1" stop-color="${sc.bg[1]}"/></linearGradient></defs><rect x="0" y="0" width="360" height="440" fill="url(#shb)"/><ellipse cx="180" cy="436" rx="260" ry="46" fill="#4ade80" opacity=".75"/>
+  <text x="180" y="150" text-anchor="middle" font-size="150">${sc.who}</text><rect x="14" y="228" width="332" height="92" rx="26" fill="#fff" opacity=".85" stroke="${mInk}" stroke-width="3"/>`;
+  items.forEach((e,i)=>{svg+=`<text class="mshd" x="${xs(i)}" y="296" text-anchor="middle" font-size="58">${e}</text>`});
+  ord.forEach((i,j)=>{svg+=mItem('drg',xs(j),385,`<text text-anchor="middle" y="18" font-size="60" style="filter:drop-shadow(0 4px 3px rgba(0,0,0,.3))">${items[i]}</text>`,`data-s="${i}"`)});
+  mStart(g,L3('Glisse chaque objet sur son ombre','Drag each object onto its shadow','Glis sak objet lor so lonm'),svg+'</svg>',n);
+  mDrag($('.msvg'),(t,x,y)=>{
+    const i=+t.dataset.s;
+    if(Math.abs(x-xs(i))<42&&y>240&&y<330){t.classList.add('done');mPlace(t,xs(i),283);const sh=$('.msvg').querySelectorAll('.mshd')[i];if(sh)sh.style.opacity=0;MS.done++;mProg();sndOk();if(MS.done===n){sndWin();confetti();mFinish()}return true}
+    if(y>240&&y<330){mBad(t);mFb(L3('Pas la bonne ombre','Not this shadow','Pa sa lonm la'),false)}
+    return false;
+  });
+}
+
+/* ---------- Pont à dessiner ---------- */
+function montBridge(g){
+  const LV=[100,130,160,190],lv=S.band<=1?2:4,gaps=LV.slice(0,lv);
+  let li=0,tries=0;
+  mStart(g,L3('Dessine un pont avec ton doigt pour que la voiture passe !','Draw a bridge with your finger so the car can cross!','Deside enn pon ar ou dwa pou loto pas !'),`<canvas id="mbc" class="mcan"></canvas><div class="mbtn"><button class="btn" id="mbgo">▶ ${L3('Rouler','Go','Roule')}</button><button class="btn alt" id="mbclr">↺</button></div>`,gaps.length);
+  const cv=$('#mbc'),WW=340,HH=300,dpr=Math.min(3,window.devicePixelRatio||1);
+  cv.width=WW*dpr;cv.height=HH*dpr;cv.style.width=WW+'px';cv.style.height=HH+'px';
+  const c=cv.getContext('2d');
+  const GY=170;let gl,gr,pts,ink,drawing,car,phase,t0=0,fall;
+  const setup=()=>{const gap=gaps[li];gl=WW/2-gap/2;gr=WW/2+gap/2;pts=[];ink=gap*1.7+60;car={x:26,y:GY,a:0,vy:0};phase='draw';fall=false;draw()};
+  const supY=x=>{ // hauteur du pont en x
+    if(x<=gl||x>=gr)return GY;
+    let best=null;for(const p of pts)if(Math.abs(p[0]-x)<7){if(best===null||Math.abs(p[1]-car.y)<Math.abs(best-car.y))best=p[1]}
+    return best;
+  };
+  function draw(){
+    c.setTransform(dpr,0,0,dpr,0,0);
+    const sk=c.createLinearGradient(0,0,0,HH);sk.addColorStop(0,'#38bdf8');sk.addColorStop(1,'#bae6fd');c.fillStyle=sk;c.fillRect(0,0,WW,HH);
+    c.fillStyle='#fff';[[60,50],[220,36],[290,80]].forEach(([x,y])=>{c.globalAlpha=.85;c.beginPath();c.ellipse(x,y,26,10,0,0,7);c.ellipse(x+14,y-6,16,10,0,0,7);c.fill();c.globalAlpha=1});
+    c.fillStyle='#16a34a';c.fillRect(0,GY,gl,12);c.fillRect(gr,GY,WW-gr,12);
+    c.fillStyle='#9ca3af';c.fillRect(0,GY+12,gl,HH);c.fillRect(gr,GY+12,WW-gr,HH);
+    c.strokeStyle='#6b7280';c.lineWidth=1;for(let y=GY+22;y<HH;y+=16){c.beginPath();c.moveTo(0,y);c.lineTo(gl,y);c.moveTo(gr,y);c.lineTo(WW,y);c.stroke()}
+    c.fillStyle='#38bdf8';c.fillRect(gl,GY+60,gr-gl,HH);c.fillStyle='#0ea5e9';c.fillRect(gl,GY+70,gr-gl,HH);
+    // drapeau
+    c.strokeStyle='#fff';c.lineWidth=3;c.beginPath();c.moveTo(WW-30,GY);c.lineTo(WW-30,GY-70);c.stroke();c.fillStyle='#ef4444';c.beginPath();c.moveTo(WW-30,GY-70);c.lineTo(WW-6,GY-60);c.lineTo(WW-30,GY-50);c.fill();
+    // pont
+    if(pts.length){c.strokeStyle='#92400e';c.lineWidth=9;c.lineCap=c.lineJoin='round';c.beginPath();pts.forEach((p,i)=>i?c.lineTo(p[0],p[1]):c.moveTo(p[0],p[1]));c.stroke();c.strokeStyle='#d97706';c.lineWidth=5;c.stroke()}
+    // jauge d'encre
+    c.fillStyle='rgba(0,0,0,.2)';c.fillRect(10,10,100,10);c.fillStyle='#f97316';c.fillRect(10,10,100*Math.max(0,ink)/(gaps[li]*1.7+60),10);
+    // voiture
+    c.save();c.translate(car.x,car.y);c.rotate(car.a);
+    c.fillStyle='#ef4444';c.beginPath();c.roundRect(-22,-26,44,16,6);c.fill();c.beginPath();c.roundRect(-13,-37,26,16,7);c.fill();
+    c.fillStyle='#bae6fd';c.beginPath();c.roundRect(-9,-34,8,10,2);c.roundRect(1,-34,8,10,2);c.fill();
+    c.fillStyle='#111827';[-13,13].forEach(x=>{c.beginPath();c.arc(x,-8,8,0,7);c.fill();c.fillStyle='#e5e7eb';c.beginPath();c.arc(x,-8,3.4,0,7);c.fill();c.fillStyle='#111827'});
+    c.restore();
+  }
+  const pos=e=>{const b=cv.getBoundingClientRect();return [(e.clientX-b.left)*WW/b.width,(e.clientY-b.top)*HH/b.height]};
+  cv.onpointerdown=e=>{if(phase!=='draw')return;drawing=true;const p=pos(e);pts.push(p);try{cv.setPointerCapture(e.pointerId)}catch(x){}draw();e.preventDefault()};
+  cv.onpointermove=e=>{if(!drawing||ink<=0)return;const p=pos(e),q=pts[pts.length-1],d=Math.hypot(p[0]-q[0],p[1]-q[1]);if(d<3)return;
+    // interpolation pour éviter les trous
+    const k=Math.ceil(d/4);for(let i=1;i<=k&&ink>0;i++){pts.push([q[0]+(p[0]-q[0])*i/k,q[1]+(p[1]-q[1])*i/k]);ink-=d/k}
+    draw()};
+  cv.onpointerup=cv.onpointercancel=()=>{drawing=false};
+  $('#mbclr').onclick=()=>{if(phase==='draw'){pts=[];ink=gaps[li]*1.7+60;draw()}};
+  const fail=()=>{phase='fall';tries++;MS.miss=Math.max(0,tries-1);sndBad();mFb(L3('Oups ! Dessine un chemin continu et pas trop raide','Oops! Draw a continuous, gentle path','Oups ! Deside enn semin kontinu'),false)};
+  $('#mbgo').onclick=()=>{
+    if(phase!=='draw')return;phase='drive';car={x:26,y:GY,a:0,vy:0};t0=performance.now();let last=t0;
+    const tick=now=>{
+      if(CUR!==g||S.view!=='play')return;
+      const dt=Math.min(.05,(now-last)/1000);last=now;
+      if(phase==='drive'){
+        const nx=car.x+85*dt,y=supY(nx);
+        if(y===null||Math.abs(y-car.y)>26&&nx>gl&&nx<gr){fail()}
+        else{const dy=y-car.y;car.a=Math.atan2(dy,85*dt);car.x=nx;car.y=y;if(nx>gr||nx<gl)car.a*=.5;
+          if(car.x>=WW-34){phase='win';MS.done=++li;mProg();sndOk();confetti();mFb(L3('Bravo, le pont tient !','Great, the bridge holds!','Bravo, pon la tini !'),true);
+            draw();if(li>=gaps.length){sndWin();mFinish()}else setTimeout(()=>{if(CUR===g&&S.view==='play')setup()},1400);return}}
+      }
+      if(phase==='fall'){car.vy+=600*dt;car.y+=car.vy*dt;car.a+=dt*2;if(car.y>HH+60){setTimeout(()=>{if(CUR===g&&S.view==='play'){setup()}},300);draw();return}}
+      draw();requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+  };
+  setup();
+}
+
+/* ---------- Puzzle : échange les morceaux ---------- */
+function montPuzzle(g){
+  const cols=S.band<=1||S.band===6?2:3,rows=2+(S.band>=2?1:0)*(cols===3?1:0),CW=Math.floor(300/cols),CH=Math.floor((cols===2?240:270)/rows);
+  const BW=CW*cols,BH=CH*rows,OX=(360-BW)/2,OY=30;
+  const SCN=pick([
+    ['#7dd3fc','#bbf7d0',[['☀️',.8,.15,.9],['🌈',.25,.3,1.2],['🏡',.3,.75,1.5],['🌳',.78,.72,1.5],['🐕',.55,.88,.9],['🦋',.65,.4,.7]]],
+    ['#1e3a8a','#38bdf8',[['🌙',.8,.15,.9],['🐙',.3,.6,1.6],['🐠',.7,.45,1],['🐢',.62,.82,1.2],['🐚',.2,.9,.8],['🫧',.45,.25,.8]]],
+    ['#312e81','#7c3aed',[['🪐',.25,.25,1.3],['🚀',.65,.55,1.6],['⭐',.8,.15,.8],['🌍',.3,.8,1.2],['🛰️',.8,.82,.9],['✨',.5,.12,.7]]]
+  ]);
+  const scene=`<g id="scn"><rect width="${BW}" height="${BH}" fill="url(#pzb)"/>${SCN[2].map(([e,x,y,s])=>`<text x="${x*BW}" y="${y*BH}" font-size="${s*BW*.2}" text-anchor="middle" dominant-baseline="central">${e}</text>`).join('')}</g>`;
+  const order=shuffle(Array.from({length:cols*rows},(_,i)=>i));
+  const slot=i=>[OX+(i%cols)*CW,OY+Math.floor(i/cols)*CH];
+  let svg=`<svg class="msvg" viewBox="0 0 360 400" role="img" aria-label="Puzzle"><defs><linearGradient id="pzb" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${SCN[0]}"/><stop offset="1" stop-color="${SCN[1]}"/></linearGradient>${scene}</defs><rect x="${OX-8}" y="${OY-8}" width="${BW+16}" height="${BH+16}" rx="18" fill="#fff" stroke="${mInk}" stroke-width="3"/>`;
+  order.forEach((p,s)=>{
+    const [x,y]=slot(s),px=(p%cols)*CW,py=Math.floor(p/cols)*CH;
+    svg+=mItem('drg',x,y,`<clipPath id="pc${p}"><rect width="${CW}" height="${CH}"/></clipPath><g clip-path="url(#pc${p})"><use href="#scn" x="${-px}" y="${-py}"/></g><rect width="${CW}" height="${CH}" fill="none" stroke="#fff" stroke-width="3"/>`,`data-p="${p}" data-s="${s}"`);
+  });
+  mStart(g,L3('Remets l’image en ordre : échange les morceaux','Put the picture in order: swap the pieces','Met im an lord : sanz bann morso'),svg+`</svg>`,1);
+  const svgEl=$('.msvg');
+  const piece=s=>[...svgEl.querySelectorAll('.drg')].find(e=>+e.dataset.s===s);
+  const check=()=>{const all=[...svgEl.querySelectorAll('.drg')];all.forEach(e=>e.classList.toggle('ok',+e.dataset.p===+e.dataset.s));return all.every(e=>+e.dataset.p===+e.dataset.s)};
+  mDrag(svgEl,(t,x,y)=>{
+    const cx=x+CW/2,cy=y+CH/2,tc=Math.floor((cx-OX)/CW),tr=Math.floor((cy-OY)/CH),s0=+t.dataset.s;
+    if(tc<0||tc>=cols||tr<0||tr>=rows)return false;
+    const s1=tr*cols+tc;if(s1===s0)return false;
+    const o=piece(s1);t.dataset.s=s1;o.dataset.s=s0;
+    const a=slot(s1),b=slot(s0);mPlace(t,a[0],a[1]);t.dataset.x=a[0];t.dataset.y=a[1];mPlace(o,b[0],b[1]);o.dataset.x=b[0];o.dataset.y=b[1];
+    sndOk();
+    if(check()){MS.done=1;mProg();sndWin();confetti();mFinish()}
+    return true;
+  });
+}
+
+/* ---------- Cycles : mets dans l'ordre ---------- */
+function montCycle(g){
+  const SETS=[
+    [['🌰','🌱','🌿','🌻'],['La graine pousse','The seed grows','Lagrenn pous']],
+    [['🥚','🐣','🐥','🐓'],['Du œuf à la poule','From egg to hen','Dilef ziska poul']],
+    [['🌅','☀️','🌇','🌙'],['Une journée','A day','Enn zournen']],
+    [['👶','🧒','🧑','🧓'],['On grandit','Growing up','Nou grandi']],
+    [['🌸','☀️','🍂','❄️'],['Les saisons','The seasons','Bann sezon']]
+  ];
+  const n=S.band<=1||S.band===6?3:4,rounds=S.band<=1?2:3,sets=sample(SETS,rounds);
+  let r=0,k=0,cur;
+  const draw=()=>{
+    cur=sets[r];const seq=cur[0].slice(0,n);const ord=shuffle(seq.map((_,i)=>i));
+    const sw=(360-20)/n;
+    let svg=`<svg class="msvg" viewBox="0 0 360 400" role="img" aria-label="Cycle"><text x="180" y="34" text-anchor="middle" font-size="22" font-weight="800" fill="${mInk}" font-family="Baloo 2,Nunito,sans-serif">${tt(cur[1])}</text>`;
+    seq.forEach((_,i)=>{const x=10+sw*i+sw/2;svg+=`<rect x="${x-sw/2+4}" y="60" width="${sw-8}" height="${sw-8}" rx="22" fill="#fff" stroke="#b9aee6" stroke-width="3" stroke-dasharray="6 6"/><text x="${x}" y="${60+sw/2-4+8}" text-anchor="middle" font-size="26" font-weight="800" fill="#b9aee6" class="mnum">${i+1}</text>`});
+    ord.forEach((idx,j)=>{const x=(j%2)?260:100,y=190+Math.floor(j/2)*105;svg+=`<g class="mcd" data-i="${idx}" style="transform:translate(${x}px,${y}px)"><rect x="-48" y="-44" width="96" height="88" rx="24" fill="#fff" stroke="${mInk}" stroke-width="3"/><text text-anchor="middle" y="18" font-size="56">${seq[idx]}</text></g>`});
+    k=0;return svg+'</svg>';
+  };
+  mStart(g,L3('Remets les images dans l’ordre !','Put the pictures in order!','Met bann limaz dan lord !'),draw(),rounds);
+  const bind=()=>{
+    $('.msvg').addEventListener('click',e=>{
+      const b=e.target.closest('.mcd');if(!b||b.classList.contains('done'))return;
+      if(+b.dataset.i===k){
+        const sw=(360-20)/n,x=10+sw*k+sw/2;b.classList.add('done');b.style.transition='transform .5s cubic-bezier(.3,1.3,.5,1)';
+        b.style.transform=`translate(${x}px,${60+sw/2-4}px) scale(${(sw-8)/96})`;k++;sndOk();
+        if(k===n){MS.done=++r;mProg();confetti();mFb(L3('Bravo, c’est dans l’ordre !','Well done, in order!','Bravo, dan lord !'),true);
+          if(r>=rounds){sndWin();mFinish()}else setTimeout(()=>{if(CUR===g&&S.view==='play'){$('.mstage').innerHTML=draw();bind()}},1400)}
+      }else{mBad(b);mFb(L3('Qu’est-ce qui vient en premier ?','What comes first?','Ki ki vini premye ?'),false)}
+    });
+  };
+  bind();
+}
+
+/* ---------- Premier son : quelle est la première lettre ? ---------- */
+function montFirst(g){
+  const rounds=5,ws=sample(MWORDS,rounds);let r=0;
+  const draw=()=>{
+    const w=ws[r],ans=wNorm(wShow(w))[0];
+    const others=shuffle('ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('').filter(x=>x!==ans)).slice(0,2),opts=shuffle([ans,...others]);
+    let svg=`<svg class="msvg" viewBox="0 0 360 400" role="img" aria-label="Premier son"><rect x="40" y="20" width="280" height="200" rx="40" fill="#fff" stroke="#e2dcfa" stroke-width="4"/><text x="180" y="150" text-anchor="middle" font-size="130">${w[0]}</text>`;
+    opts.forEach((o,i)=>{const x=65+i*115;svg+=`<g class="mopt" data-o="${o}" style="transform:translate(${x}px,335px)"><circle r="46" fill="#f5f3ff" stroke="#8b5cf6" stroke-width="4"/><text text-anchor="middle" y="22" font-size="62" font-weight="800" fill="#6d28d9" font-family="Baloo 2,Nunito,sans-serif">${o}</text></g>`});
+    return {svg:svg+'</svg>',ans,w};
+  };
+  let P=draw();
+  mStart(g,L3('Par quelle lettre commence ce mot ?','Which letter does this word start with?','Ar ki lalet sa mo la komanse ?'),P.svg,rounds);
+  try{speak(wShow(P.w))}catch(e){}
+  const bind=()=>{
+    $('.msvg').addEventListener('click',e=>{
+      const o=e.target.closest('.mopt');if(!o)return;
+      if(o.dataset.o===P.ans){
+        MS.done=++r;mProg();sndOk();try{speak(wShow(P.w))}catch(x){}mFb(`${P.ans} — ${wShow(P.w)}`,true);
+        if(r>=rounds){sndWin();confetti();mFinish()}
+        else setTimeout(()=>{if(CUR!==g||S.view!=='play')return;P=draw();$('.mstage').innerHTML=P.svg;bind();try{speak(wShow(P.w))}catch(x){}},1200);
+      }else{mBad(o);mFb(L3('Écoute bien le début du mot','Listen to the start of the word','Ekout bien lekmansman mo la'),false)}
+    });
+  };
+  bind();
+}
+Object.assign(MONTG,{hang:montHang,shadow:montShadow,bridge:montBridge,puzzle:montPuzzle,cycle:montCycle,first:montFirst});
+
+GAMES.push(
+  {id:'m-shd',type:'mont',mont:'shadow',bands:[6,0,1,2,3],icon:'🧑‍🚒',name:['Ombres des métiers','Job shadows','Lonm bann metie'],desc:['Glisse l’objet sur son ombre','Drag the object onto its shadow','Glis objet lor so lonm']},
+  {id:'m-pzl',type:'mont',mont:'puzzle',bands:[0,1,2,3,4],icon:'🧩',name:['Puzzle magique','Magic puzzle','Puzzle mazik'],desc:['Remets l’image en ordre','Put the picture back in order','Remet lime dan lord']},
+  {id:'m-cyc',type:'mont',mont:'cycle',bands:[0,1,2,3],icon:'🌱',name:['Étapes de vie','Life steps','Bann etap lavi'],desc:['Mets les images dans l’ordre','Put pictures in order','Met bann lime dan lord']},
+  {id:'m-fst',type:'mont',mont:'first',bands:[0,1,2],icon:'🔤',name:['Première lettre','First letter','Premye lalet'],desc:['Par quelle lettre commence le mot ?','Which letter starts the word?','Ar ki lalet mo la komanse ?']},
+  {id:'m-brg',type:'mont',mont:'bridge',cat:'create',bands:[1,2,3,4,5],icon:'🌉',name:['Le pont magique','Magic bridge','Pon mazik'],desc:['Dessine un pont pour la voiture','Draw a bridge for the car','Deside enn pon pou loto']},
+  {id:'m-hng',type:'mont',mont:'hang',cat:'learn',bands:[1,2,3,4,5,7,8],icon:'🎈',name:['Mot mystère (pendu)','Mystery word (hangman)','Mo mister (pandi)'],desc:['Devine le mot avant que les ballons éclatent','Guess the word before the balloons pop','Devine mo avan bann balon eklate']}
 );
 /* ---------- Textes de l'interface : [fr, en, créole] ---------- */
 const UI={
