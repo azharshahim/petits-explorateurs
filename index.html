@@ -940,6 +940,7 @@ function voiceList(lang){
   return c.sort((x,y)=>sc(y)-sc(x));
 }
 function pickVoice(lang,n){return voiceList(lang)[n||0]||null}
+const APP_VER='v22 · 28 oct';
 let VDIAG='';
 function mkUtt(text,vi){
   const withVoice=typeof vi==='number',n=vi||0;
@@ -5643,6 +5644,7 @@ function paintSheet(){
       <input type="range" id="volRange" min="0" max="100" step="5" value="${Math.round(VOL*100)}" aria-label="${U('setVol')}"><output id="volOut">${Math.round(VOL*100)}%</output></div>
       <div class="chips" style="margin-top:10px">${tgl('mus',MUS_ON,'🎵 '+U('music'))}${tgl('sfx',SFX,'🔔 '+U('effects'))}${tgl('voice',VOICE,'🗣️ '+U('voice'))}<button class="chip" data-tg="vtest">🔊 ${L3('Tester la voix','Test voice','Tester lavoix')}${VDIAG?' · '+VDIAG:''} · ${VOICES.length} voix</button></div></div>
     <div class="set"><p class="set-t">📱 ${L3('Écran','Screen','Ekran')}</p>${seg([['auto',L3('Auto','Auto','Auto')],['portrait',L3('Portrait','Portrait','Portre')],['landscape',L3('Paysage','Landscape','Peizaz')]],ORI,'ori')}</div>
+    <div class="set"><p class="set-t">ℹ️ ${L3('Version de l’appli','App version','Version appli')}</p><div class="chips"><span class="chip" style="cursor:default">${APP_VER}</span><button class="chip" data-tg="upd">🔄 ${L3('Mettre à jour','Update','Mete ajou')}</button></div></div>
     <div class="set"><p class="set-t">${U('setLang')}</p>${seg(LKEYS.map(k=>[k,LANG_LABELS[k]]),LANG,'lang')}</div>
     <div class="set"><button class="btn alt" data-act="parents" style="width:100%">🔒 ${U('parents')}</button></div>
   </div>`;
@@ -5858,6 +5860,7 @@ $('#sheet').addEventListener('click',e=>{
     const k=t.dataset.tg;
     if(k==='mus'){MUS_ON=!MUS_ON;store.set('mus',MUS_ON);if(!MUS_ON)musStop();else if(ARC.run)musStart(ARC.run.mus);else if(S.view==='hub'||S.view==='cat')hubMusic();else if(S.view==='home'||S.view==='profile')musStart(MUSIC.welcome)}
     else if(k==='sfx'){SFX=!SFX;store.set('sfx',SFX);if(SFX)sndOk()}
+    else if(k==='upd'){(async()=>{try{const rs=await navigator.serviceWorker.getRegistrations();for(const r of rs)await r.unregister();const ks=await caches.keys();for(const k2 of ks)await caches.delete(k2)}catch(e){}location.reload()})();return}
     else if(k==='vtest'){VDIAG='…';loadVoices();const was=VOICE,ws=SOUND;VOICE=true;SOUND=true;speak(L3('Bonjour, je suis la voix de Petits Explorateurs','Hello, I am the voice of Petits Explorateurs','Bonzour'));VOICE=was;SOUND=ws;setTimeout(paintSheet,1500)}
     else if(k==='voice'){VOICE=!VOICE;store.set('voice',VOICE);if(!VOICE){try{window.speechSynthesis&&window.speechSynthesis.cancel()}catch(x){}}else speak(U('hello'))}
     else if(k==='bed'){
