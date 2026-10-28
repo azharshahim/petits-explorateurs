@@ -931,18 +931,20 @@ const sndWin=()=>{[523,659,784,1047].forEach((f,i)=>tone(f,.22,'sine',i*.13))};
 let VOICES=[];
 function loadVoices(){try{VOICES=window.speechSynthesis.getVoices()||[]}catch(e){VOICES=[]}}
 try{loadVoices();if(window.speechSynthesis&&window.speechSynthesis.addEventListener)window.speechSynthesis.addEventListener('voiceschanged',loadVoices)}catch(e){}
-function pickVoice(lang){
+function voiceList(lang){
   if(!VOICES.length)loadVoices();
   const base=lang.slice(0,2).toLowerCase();
-  const cand=VOICES.filter(v=>(v.lang||'').toLowerCase().replace('_','-').startsWith(base));
-  if(!cand.length)return null;
-  const fem=/amelie|amélie|audrey|aurelie|marie|julie|google fran|google us|samantha|zira|hortense|denise|female|femme|siri/i;
-  return cand.find(v=>fem.test(v.name)&&v.localService===false)||cand.find(v=>fem.test(v.name))||cand.find(v=>(v.lang||'').replace('_','-')===lang)||cand[0];
+  const c=VOICES.filter(v=>(v.lang||'').toLowerCase().replace('_','-').startsWith(base));
+  const fem=/amelie|amélie|audrey|aurelie|marie|julie|google|samantha|zira|hortense|denise|female|femme/i;
+  const sc=v=>(v.localService?2:0)+(fem.test(v.name)?1:0)+((v.lang||'').replace('_','-')===lang?1:0);
+  return c.sort((x,y)=>sc(y)-sc(x));
 }
+function pickVoice(lang,n){return voiceList(lang)[n||0]||null}
 let VDIAG='';
-function mkUtt(text,withVoice){
+function mkUtt(text,vi){
+  const withVoice=typeof vi==='number',n=vi||0;
   const u=new SpeechSynthesisUtterance(text);u.lang=SPEECH[LANG];
-  if(withVoice){const v=pickVoice(SPEECH[LANG]);if(v){u.voice=v;u.lang=v.lang||u.lang}}
+  if(withVoice){const v=pickVoice(SPEECH[LANG],n);if(v){u.voice=v;u.lang=v.lang||u.lang}}
   u.volume=VOL;u.rate=.9;u.pitch=1.1;return u;
 }
 let SPK_T=0;
@@ -960,7 +962,8 @@ function speak(text){
     const ss=window.speechSynthesis;if(!ss)return;
     stopSpeak();
     const u=mkUtt(text);
-    u.onerror=ev=>{const er=ev&&ev.error||'?';VDIAG='erreur: '+er;if(er==='canceled'||er==='interrupted')return;try{const u2=mkUtt(text,true);u2.onerror=e2=>{VDIAG='erreur: '+(e2&&e2.error)};ssGo(u2)}catch(x){}};
+    const tryV=n=>{const u2=mkUtt(text,n);if(!u2.voice){return}u2.onstart=()=>{VDIAG='ok (voix '+u2.voice.name+')'};u2.onerror=e2=>{const er=e2&&e2.error||'?';if(er==='canceled'||er==='interrupted')return;VDIAG='erreur: '+er;if(n<4)tryV(n+1)};ssGo(u2)};
+    u.onerror=ev=>{const er=ev&&ev.error||'?';VDIAG='erreur: '+er;if(er==='canceled'||er==='interrupted')return;tryV(0)};
     u.onstart=()=>{VDIAG='ok'};
     ssGo(u);
   }catch(e){}
