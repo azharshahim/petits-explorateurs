@@ -1,0 +1,29 @@
+<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Test voix</title>
+<style>body{font:16px system-ui;margin:0;padding:16px;background:#f7f4ff;color:#222}button{display:block;width:100%;margin:6px 0;padding:14px;font-size:16px;border-radius:12px;border:2px solid #7c5cff;background:#fff}pre{background:#fff;padding:10px;border-radius:10px;white-space:pre-wrap;font-size:13px}</style></head><body>
+<h2>Test de la voix</h2><p>Appuie sur chaque bouton et dis-moi lesquels font du son.</p><div id="b"></div><pre id="log">…</pre>
+<script>
+const log=m=>{document.getElementById('log').textContent+='\n'+m};
+document.getElementById('log').textContent='Version test 1 · '+navigator.userAgent;
+const ss=window.speechSynthesis;let V=[];const load=()=>{V=ss.getVoices()};load();ss.onvoiceschanged=()=>{load();draw()};
+function say(name,o){
+  ss.cancel();
+  setTimeout(()=>{
+    const u=new SpeechSynthesisUtterance(o.text||'Bonjour, ceci est un test de la voix');
+    if(o.lang)u.lang=o.lang;if(o.voice)u.voice=o.voice;
+    if(o.rate!=null)u.rate=o.rate;if(o.pitch!=null)u.pitch=o.pitch;if(o.volume!=null)u.volume=o.volume;
+    u.onstart=()=>log(name+' → démarré');u.onend=()=>log(name+' → fini');u.onerror=e=>log(name+' → ERREUR '+e.error);
+    log(name+' → envoi');ss.speak(u);
+  },o.delay===0?0:120);
+}
+function draw(){
+  const b=document.getElementById('b');b.innerHTML='';
+  const add=(t,f)=>{const x=document.createElement('button');x.textContent=t;x.onclick=f;b.appendChild(x)};
+  add('A. Simple (aucun réglage)',()=>say('A',{}));
+  add('B. Langue fr-FR',()=>say('B',{lang:'fr-FR'}));
+  add('C. fr-FR + vitesse 0.9 + ton 1.1 (comme l’appli)',()=>say('C',{lang:'fr-FR',rate:.9,pitch:1.1,volume:.8}));
+  add('D. fr-FR, volume 1',()=>say('D',{lang:'fr-FR',volume:1}));
+  V.filter(v=>/^fr/i.test(v.lang)).slice(0,8).forEach((v,i)=>add('Voix '+(i+1)+' : '+v.name+' ('+v.lang+(v.localService?', locale':', réseau')+')',()=>say('Voix '+(i+1),{voice:v,lang:v.lang})));
+  log('voix totales: '+V.length+' · françaises: '+V.filter(v=>/^fr/i.test(v.lang)).length);
+}
+draw();
+</script></body></html>
