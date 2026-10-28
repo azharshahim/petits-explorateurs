@@ -939,9 +939,10 @@ function pickVoice(lang){
   const fem=/amelie|amélie|audrey|aurelie|marie|julie|google fran|google us|samantha|zira|hortense|denise|female|femme|siri/i;
   return cand.find(v=>fem.test(v.name)&&v.localService===false)||cand.find(v=>fem.test(v.name))||cand.find(v=>(v.lang||'').replace('_','-')===lang)||cand[0];
 }
-function mkUtt(text){
+let VDIAG='';
+function mkUtt(text,withVoice){
   const u=new SpeechSynthesisUtterance(text);u.lang=SPEECH[LANG];
-  const v=pickVoice(SPEECH[LANG]);if(v){u.voice=v;u.lang=v.lang||u.lang}
+  if(withVoice){const v=pickVoice(SPEECH[LANG]);if(v){u.voice=v;u.lang=v.lang||u.lang}}
   u.volume=VOL;u.rate=.9;u.pitch=1.1;return u;
 }
 let SPK_T=0;
@@ -959,6 +960,8 @@ function speak(text){
     const ss=window.speechSynthesis;if(!ss)return;
     stopSpeak();
     const u=mkUtt(text);
+    u.onerror=ev=>{const er=ev&&ev.error||'?';VDIAG='erreur: '+er;if(er==='canceled'||er==='interrupted')return;try{const u2=mkUtt(text,true);u2.onerror=e2=>{VDIAG='erreur: '+(e2&&e2.error)};ssGo(u2)}catch(x){}};
+    u.onstart=()=>{VDIAG='ok'};
     ssGo(u);
   }catch(e){}
 }
@@ -1006,7 +1009,7 @@ function readEl(el,words,text,cb){
       if(!gotB){gotB=true;timers.forEach(clearTimeout);timers=[]}
       let k=0;for(let i=0;i<offs.length;i++)if(offs[i]<=ev.charIndex)k=i;lit(k);
     };
-    u.onend=fin;u.onerror=()=>{if(spoke||done)return fin();started=false;go();timers.push(setTimeout(fin,est*.85))};
+    u.onend=fin;u.onerror=ev=>{VDIAG='erreur: '+(ev&&ev.error);if(spoke||done)return fin();started=false;go();timers.push(setTimeout(fin,est*.85))};
     READ.clear=()=>{done=true;timers.forEach(clearTimeout)};
     timers.push(setTimeout(fin,est+3500));
     ssGo(u);
@@ -5635,7 +5638,7 @@ function paintSheet(){
     <div class="set"><p class="set-t">${U('setVol')}</p>
       <div class="volrow"><button class="mute" data-act="mute" aria-pressed="${!SOUND}" aria-label="${U(SOUND?'soundOn':'soundOff')}">${SOUND?IC.on:IC.off}</button>
       <input type="range" id="volRange" min="0" max="100" step="5" value="${Math.round(VOL*100)}" aria-label="${U('setVol')}"><output id="volOut">${Math.round(VOL*100)}%</output></div>
-      <div class="chips" style="margin-top:10px">${tgl('mus',MUS_ON,'🎵 '+U('music'))}${tgl('sfx',SFX,'🔔 '+U('effects'))}${tgl('voice',VOICE,'🗣️ '+U('voice'))}</div></div>
+      <div class="chips" style="margin-top:10px">${tgl('mus',MUS_ON,'🎵 '+U('music'))}${tgl('sfx',SFX,'🔔 '+U('effects'))}${tgl('voice',VOICE,'🗣️ '+U('voice'))}<button class="chip" data-tg="vtest">🔊 ${L3('Tester la voix','Test voice','Tester lavoix')}${VDIAG?' · '+VDIAG:''} · ${VOICES.length} voix</button></div></div>
     <div class="set"><p class="set-t">📱 ${L3('Écran','Screen','Ekran')}</p>${seg([['auto',L3('Auto','Auto','Auto')],['portrait',L3('Portrait','Portrait','Portre')],['landscape',L3('Paysage','Landscape','Peizaz')]],ORI,'ori')}</div>
     <div class="set"><p class="set-t">${U('setLang')}</p>${seg(LKEYS.map(k=>[k,LANG_LABELS[k]]),LANG,'lang')}</div>
     <div class="set"><button class="btn alt" data-act="parents" style="width:100%">🔒 ${U('parents')}</button></div>
@@ -5852,6 +5855,7 @@ $('#sheet').addEventListener('click',e=>{
     const k=t.dataset.tg;
     if(k==='mus'){MUS_ON=!MUS_ON;store.set('mus',MUS_ON);if(!MUS_ON)musStop();else if(ARC.run)musStart(ARC.run.mus);else if(S.view==='hub'||S.view==='cat')hubMusic();else if(S.view==='home'||S.view==='profile')musStart(MUSIC.welcome)}
     else if(k==='sfx'){SFX=!SFX;store.set('sfx',SFX);if(SFX)sndOk()}
+    else if(k==='vtest'){VDIAG='…';loadVoices();const was=VOICE,ws=SOUND;VOICE=true;SOUND=true;speak(L3('Bonjour, je suis la voix de Petits Explorateurs','Hello, I am the voice of Petits Explorateurs','Bonzour'));VOICE=was;SOUND=ws;setTimeout(paintSheet,1500)}
     else if(k==='voice'){VOICE=!VOICE;store.set('voice',VOICE);if(!VOICE){try{window.speechSynthesis&&window.speechSynthesis.cancel()}catch(x){}}else speak(U('hello'))}
     else if(k==='bed'){
       if(!PAR.bed&&!PAR.pin){setPinFlow(ok=>{if(ok){PAR.bed=true;savePar()}paintSheet()});return}
